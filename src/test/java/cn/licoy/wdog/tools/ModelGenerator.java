@@ -15,9 +15,13 @@ public class ModelGenerator {
      * 每次生成需修改
      */
     // 表名
-    public static String tableName = "sys_user_auth";
+    static String[] tNames = {"group","group_user","activity_memberlist","activity_notice",
+            "apartment","blacklist","score_allocation","score_setting"};
+    public static String tableName = tNames[7];
     // 类名
-    public static String modelName = "SysUserAuth";
+    static String[] mNames = {"Group","GroupUser","ActivityMemberlist","ActivityNotice",
+            "Apartment","Blacklist","ScoreAllocation","ScoreSetting"};
+    public static String modelName = mNames[7];
 
 /**********************************************************************************/
 
@@ -54,8 +58,8 @@ public class ModelGenerator {
         List<DBColumns> columns = getColumns(tableName);
         model(columns);
         mapper();
-//        service();
-//        serviceImpl();
+        service();
+        serviceImpl();
     }
 
     /**====================================================================================

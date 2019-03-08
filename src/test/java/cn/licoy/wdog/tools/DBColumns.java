@@ -33,7 +33,8 @@ public class DBColumns {
         }
         if (typeStr.equalsIgnoreCase("char")
                 || typeStr.equalsIgnoreCase("varchar")
-                || typeStr.equalsIgnoreCase("text")) {
+                || typeStr.equalsIgnoreCase("text")
+                || typeStr.equalsIgnoreCase("longtext")){
             return "String";
         } else if (typeStr.equalsIgnoreCase("smallint")
                 || typeStr.equalsIgnoreCase("int")
