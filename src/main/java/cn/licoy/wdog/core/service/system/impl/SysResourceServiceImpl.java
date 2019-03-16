@@ -35,7 +35,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
     @Override
     public List<SysResource> list() {
         EntityWrapper<SysResource> wrapper = new EntityWrapper<>();
-        wrapper.eq("parent_id",0)
+        wrapper.eq("parent_id","ROOT")
                 .or()
                 .isNull("parent_id")
                 .orderBy("sort");

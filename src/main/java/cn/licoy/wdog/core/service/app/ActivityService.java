@@ -1,11 +1,29 @@
 package cn.licoy.wdog.core.service.app;
 
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
-import cn.licoy.wdog.core.dto.app.activity.ActivityUpdate;
+import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.Activity;
+import cn.licoy.wdog.core.vo.app.ActivityVO;
+import cn.licoy.wdog.core.vo.app.FindActivityDTO;
+import cn.licoy.wdog.core.vo.app.StatusChangeDTO;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
 public interface ActivityService extends IService<Activity> {
+
+    /**
+     * 活动列表
+     */
+    /**
+     * 获取所有用户（分页）
+     * @param findActivityDTO 过滤条件
+     */
+    Page<ActivityVO> getAllActivityBySplitPage(FindActivityDTO findActivityDTO);
+
+    /**
+     * 活动列表(回收站)
+     */
+    Page<ActivityVO> getCancelActivityBySplitPage(FindActivityDTO findActivityDTO);
 
     /**
      * 创建活动
@@ -25,10 +43,22 @@ public interface ActivityService extends IService<Activity> {
     /**
      * 更新活动信息
      */
-    void update (ActivityUpdate updateDTO);
+    void update (String id,ActivityUpdateDTO updateDTO);
 
     /**
-     *
+     * 删除活动/取消活动
      */
+    void cancel(String id);
+
+    /**
+     * 发布活动
+     */
+    void publish(String id);
+
+    /**
+     * 修改活动状态
+     * @param statusChangeDTO
+     */
+    void statusChange(StatusChangeDTO statusChangeDTO);
 
 }

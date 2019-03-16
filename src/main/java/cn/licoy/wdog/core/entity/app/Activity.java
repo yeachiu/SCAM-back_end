@@ -30,7 +30,7 @@ public class Activity extends Schema implements Serializable {
 	
 	private String url;	//
 	
-	private String status;	//状态
+	private Integer status;	//状态
 	
 	private String organizerId;	//主办方
 	

@@ -20,7 +20,7 @@ public class SysUserAuth implements Serializable {
 	@TableId
 	private String id;
 
-	private String userId;	//用户表外键
+	private String uid;	//用户表外键
 	
 	private String realName;	//姓名
 	

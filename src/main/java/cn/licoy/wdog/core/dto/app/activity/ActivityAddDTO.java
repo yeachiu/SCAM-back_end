@@ -49,4 +49,10 @@ public class ActivityAddDTO {
     private Boolean isBlackList;	//是否黑名单限制(0=true;1=false)
 
     private Boolean isReview;   //是否人工审核
+
+    private Integer status;  //活动状态
+
+    /**********************************************************************/
+
+
 }

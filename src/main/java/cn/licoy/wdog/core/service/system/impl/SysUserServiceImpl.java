@@ -106,6 +106,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
             throw new RequestException(ResponseCode.NOT_SING_IN);
         }
         JwtToken jwtToken = new JwtToken();
+        //获取当前登录用户
         Object principal = subject.getPrincipal();
         if(principal==null){
             throw RequestException.fail("用户信息获取失败");
