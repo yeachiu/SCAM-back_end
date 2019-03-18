@@ -24,8 +24,6 @@ import java.util.Map;
 @Transactional
 public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,SysDictionary> implements SysDictionaryService{
 
-    @Autowired
-    private ShiroService shiroService;
 
     @Autowired
     private SysUserService userService;
@@ -54,7 +52,6 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
             throw RequestException.fail("添加失败because获取用户信息失败");
         dictionary.setCreateUser(currentUser.getId());
         this.insert(dictionary);
-        shiroService.reloadPerms();
     }
 
     @Override
@@ -69,7 +66,6 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
             throw RequestException.fail("添加失败because获取用户信息失败");
         dictionary.setModifyUser(currentUser.getId());
         this.updateById(dictionary);
-        shiroService.reloadPerms();
     }
 
     @Override
@@ -79,7 +75,6 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
         if (dictionary == null)
             throw RequestException.fail("删除失败，不存在ID为" + id + "的字典条目");
         this.deleteById(id);
-        shiroService.reloadPerms();
     }
 
     @Override

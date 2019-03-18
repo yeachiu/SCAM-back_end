@@ -18,4 +18,9 @@ public class ConstCode {
     public static final Integer ACT_STATUS_COMPLETE = 3;   //已结束
     public static final Integer ACT_STATUS_CANCEL = -1 ;   //已取消
 
+    /** 分组标识 **/
+    public static final Integer SYMBOL_USER = 0;    //用户分组
+    public static final Integer SYMBOL_APARTMENT = 1;   //  部门分组
+    public static final String PERIOD_NAME = "级";
+    public static final String CLASS_NAME = "班";
 }

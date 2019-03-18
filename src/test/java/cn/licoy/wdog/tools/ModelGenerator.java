@@ -15,13 +15,15 @@ public class ModelGenerator {
      * 每次生成需修改
      */
     // 表名
-    static String[] tNames = {"group","group_user","activity_memberlist","activity_notice",
-            "apartment","blacklist","score_allocation","score_setting"};
-    public static String tableName = tNames[7];
+//    static String[] tNames = {"group","group_user","activity_memberlist","activity_notice",
+//            "apartment","blacklist","score_allocation","score_setting"};
+//    public static String tableName = tNames[7];
+    public static String tableName = "activity";
     // 类名
-    static String[] mNames = {"Group","GroupUser","ActivityMemberlist","ActivityNotice",
-            "Apartment","Blacklist","ScoreAllocation","ScoreSetting"};
-    public static String modelName = mNames[7];
+//    static String[] mNames = {"Group","GroupUser","ActivityMemberlist","ActivityNotice",
+//            "Apartment","Blacklist","ScoreAllocation","ScoreSetting"};
+//    public static String modelName = mNames[7];
+    public static String modelName = "Activity";
 
 /**********************************************************************************/
 
@@ -57,9 +59,9 @@ public class ModelGenerator {
         }
         List<DBColumns> columns = getColumns(tableName);
         model(columns);
-        mapper();
-        service();
-        serviceImpl();
+//        mapper();
+//        service();
+//        serviceImpl();
     }
 
     /**====================================================================================
@@ -127,6 +129,8 @@ public class ModelGenerator {
 //        sb.append("@Builder\r\n");
         sb.append("public class " + modelName
                 + " extends Schema implements Serializable {\r\n");
+//        sb.append("public class " + modelName
+//                + " implements Serializable {\r\n");//不用添加创建时间这些
         sb.append("\t\r\n");
         for (int i = 0, len = columns.size(); i < len; i++) {
             DBColumns column = columns.get(i);

@@ -18,11 +18,7 @@ public class Student extends Schema implements Serializable {
 	
 	private String stuNum;	//
 	
-	private String profession;	//
-	
-	private Integer grade;	//
-	
-	private Integer stuClass;	//
+	private String groupId;	//具体到班级的分组
 	
 	private static final long serialVersionUID = 1L;
 
