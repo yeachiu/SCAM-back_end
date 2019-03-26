@@ -30,6 +30,15 @@ public class DictionaryController {
     public ResponseResult list(){
         return ResponseResult.e(ResponseCode.OK,dictionaryService.list());
     }
+//    app/dictionary/listByCode/{dictCode}
+
+    @PostMapping(value = {"/list/{dictCode}"})
+    @ApiOperation(value = "获取所有的字典列表")
+    @SysLogs("获取所有的字典列表")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult listByCode(@PathVariable("dictCode") @ApiParam("字典代码") String dictCode){
+        return ResponseResult.e(ResponseCode.OK,dictionaryService.listByCode(dictCode));
+    }
 
     @PostMapping(value = {"/add"})
     @ApiOperation(value = "添加字典")

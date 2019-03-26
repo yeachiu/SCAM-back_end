@@ -52,13 +52,14 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
 
     @Override
     public void add(ActivityAddDTO addDTO) {
-        Activity findActivity = this.selectOne(new EntityWrapper<Activity>().eq("title",addDTO.getTitle()));
-        if(findActivity != null){
-            throw RequestException.fail(
-                    String.format("已经存在用户名为 %s 的用户",addDTO.getTitle()));
-        }
-        findActivity = new Activity();
-        BeanUtils.copyProperties(addDTO,findActivity);
+//        Activity findActivity = this.selectOne(new EntityWrapper<Activity>().eq("title",addDTO.getTitle()));
+//        if(findActivity != null){
+//            throw RequestException.fail(
+//                    String.format("已经存在用户名为 %s 的用户",addDTO.getTitle()));
+//        }
+//        findActivity = new Activity();
+//        BeanUtils.copyProperties(addDTO,findActivity);
+        System.out.println("======================= addDTO:" + addDTO.toString());
 
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Group extends Schema implements Serializable {
+public class AGroup extends Schema implements Serializable {
 	
 	private String name;	//
 	

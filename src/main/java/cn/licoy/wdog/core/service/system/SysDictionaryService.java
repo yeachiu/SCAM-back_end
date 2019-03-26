@@ -16,6 +16,13 @@ public interface SysDictionaryService extends IService<SysDictionary> {
     List<SysDictionary> list();
 
     /**
+     * 根据代码获取子列表
+     * @param dictCode
+     * @return
+     */
+    List<SysDictionary> listByCode(String dictCode);
+
+    /**
      * 添加资源
      * @param dto
      */

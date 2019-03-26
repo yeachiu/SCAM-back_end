@@ -7,15 +7,17 @@ import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.vo.app.FindActivityDTO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping(value = {"/app/activity"})
+@Api(tags = {"活动管理"})
 public class ActivityController {
 
     @Autowired
@@ -26,7 +28,8 @@ public class ActivityController {
     @SysLogs("添加活动")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult add(@RequestBody @Validated @ApiParam(value = "用户数据") ActivityAddDTO addDTO){
-        activityService.add(addDTO);
+        System.out.println("============================================= >>>> addDTO:" + addDTO);
+//        activityService.add(addDTO);
         return ResponseResult.e(ResponseCode.OK);
     }
 

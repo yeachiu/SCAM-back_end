@@ -3,8 +3,8 @@ package cn.licoy.wdog.core.controller.app;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
-import cn.licoy.wdog.core.dto.app.GroupDTO;
-import cn.licoy.wdog.core.service.app.GroupService;
+import cn.licoy.wdog.core.dto.app.AGroupDTO;
+import cn.licoy.wdog.core.service.app.AGroupService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
 
     @Autowired
-    GroupService groupService;
+    AGroupService groupService;
 
     @PostMapping(value = {"/list"})
     @ApiOperation(value = "获取所有的分组列表")
@@ -31,7 +31,7 @@ public class GroupController {
     @PostMapping(value = {"/add"})
     @ApiOperation(value = "添加分组")
     @SysLogs("添加分组")
-    public ResponseResult add(@RequestBody @Validated @ApiParam("分组数据") GroupDTO dto){
+    public ResponseResult add(@RequestBody @Validated @ApiParam("分组数据") AGroupDTO dto){
         groupService.add(dto);
         return ResponseResult.e(ResponseCode.OK);
     }
@@ -40,7 +40,7 @@ public class GroupController {
     @ApiOperation(value = "添加分组")
     @SysLogs("添加分组")
     public ResponseResult update(@PathVariable("id") @ApiParam("分组ID") String id,
-                                 @RequestBody @Validated @ApiParam("分组数据") GroupDTO dto){
+                                 @RequestBody @Validated @ApiParam("分组数据") AGroupDTO dto){
         groupService.update(id,dto);
         return ResponseResult.e(ResponseCode.OK);
     }

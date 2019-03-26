@@ -27,6 +27,8 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
 
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private SysDictionaryMapper mapper;
 
     @Override
     public List<SysDictionary> list() {
@@ -38,6 +40,16 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
         List<SysDictionary> dictionaries = this.selectList(wrapper);
         if (dictionaries != null && dictionaries.size() > 0){
             dictionaries.forEach(this::findAllChild);
+        }
+        return dictionaries;
+    }
+
+    @Override
+    public List<SysDictionary> listByCode(String dictCode) {
+
+        List<SysDictionary> dictionaries = mapper.findByDictCode(dictCode);
+        if (dictionaries != null && dictionaries.size() > 0){
+           return null;
         }
         return dictionaries;
     }

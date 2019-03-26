@@ -4,7 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Data
-public class GroupDTO {
+public class AGroupDTO {
     @NotBlank(message = "分组名称不能为空")
     private String name;
 
