@@ -30,7 +30,7 @@ public class SysUserAuth implements Serializable {
 	
 	private String profession;	//专业
 	
-	private Integer stuNum;	//学号
+	private String stuNum;	//学号
 
 	private Integer status;	//认证状态
 	
