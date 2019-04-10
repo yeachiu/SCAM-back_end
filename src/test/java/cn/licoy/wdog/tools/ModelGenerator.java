@@ -18,12 +18,12 @@ public class ModelGenerator {
 //    static String[] tNames = {"group","group_user","activity_memberlist","activity_notice",
 //            "apartment","blacklist","score_allocation","score_setting"};
 //    public static String tableName = tNames[7];
-    public static String tableName = "activity";
+    public static String tableName = "activity_admins";
     // 类名
 //    static String[] mNames = {"Group","GroupUser","ActivityMemberlist","ActivityNotice",
 //            "Apartment","Blacklist","ScoreAllocation","ScoreSetting"};
 //    public static String modelName = mNames[7];
-    public static String modelName = "Activity";
+    public static String modelName = "ActivityAdmins";
 
 /**********************************************************************************/
 
@@ -59,9 +59,9 @@ public class ModelGenerator {
         }
         List<DBColumns> columns = getColumns(tableName);
         model(columns);
-//        mapper();
-//        service();
-//        serviceImpl();
+        mapper();
+        service();
+        serviceImpl();
     }
 
     /**====================================================================================

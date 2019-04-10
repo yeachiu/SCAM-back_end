@@ -1,18 +1,10 @@
 package cn.licoy.wdog.core.controller;
 
-import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
@@ -27,7 +19,7 @@ public class UploadHandler {
      */
     @RequestMapping(value = "/upload")
     @ResponseBody
-    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+//    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult upload(@RequestParam("file") MultipartFile file){
         String dir = System.getProperty("user.dir");
         System.out.println("项目当前路径："+dir);

@@ -22,10 +22,6 @@ public class ScoreSetting extends Schema implements Serializable {
 	
 	private Integer awardScore;	//
 	
-	private Date notifyTime;	//
-	
-	private String notifyUser;	//
-	
 	private static final long serialVersionUID = 1L;
 
 }

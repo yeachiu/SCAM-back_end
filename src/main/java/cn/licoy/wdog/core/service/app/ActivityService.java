@@ -4,8 +4,8 @@ import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.Activity;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
-import cn.licoy.wdog.core.vo.app.FindActivityDTO;
-import cn.licoy.wdog.core.vo.app.StatusChangeDTO;
+import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
+import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 

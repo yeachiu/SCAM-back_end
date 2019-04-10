@@ -16,7 +16,7 @@ public class ActivityForm extends Schema implements Serializable {
 	
 	private String activityId;	//活动表外键
 	
-	private String formEntryId;	//条目表外键
+	private String rules;	//表单规则
 	
 	private String status;	//状态
 	

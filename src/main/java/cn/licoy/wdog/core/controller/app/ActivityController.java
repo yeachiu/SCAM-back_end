@@ -6,7 +6,7 @@ import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.service.app.ActivityService;
-import cn.licoy.wdog.core.vo.app.FindActivityDTO;
+import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -28,8 +28,8 @@ public class ActivityController {
     @SysLogs("添加活动")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult add(@RequestBody @Validated @ApiParam(value = "用户数据") ActivityAddDTO addDTO){
-        System.out.println("============================================= >>>> addDTO:" + addDTO);
-//        activityService.add(addDTO);
+        System.out.println("============================================= >>>> addDTO:" + addDTO.toString());
+        activityService.add(addDTO);
         return ResponseResult.e(ResponseCode.OK);
     }
 

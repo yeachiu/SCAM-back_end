@@ -23,4 +23,6 @@ public class ConstCode {
     public static final Integer SYMBOL_APARTMENT = 1;   //  部门分组
     public static final String PERIOD_NAME = "级";
     public static final String CLASS_NAME = "班";
+
+    /** 签到 **/
 }

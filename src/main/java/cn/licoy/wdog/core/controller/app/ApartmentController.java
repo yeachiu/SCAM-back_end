@@ -3,6 +3,7 @@ package cn.licoy.wdog.core.controller.app;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
+import cn.licoy.wdog.core.vo.app.MemberVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = {"/app/apartment"})
@@ -20,9 +24,13 @@ public class ApartmentController {
     @ApiOperation(value = ("部门成员列表"))
     @SysLogs("部门成员列表")
     public ResponseResult memberList(@PathVariable("id") @ApiParam(value = "部门ID") String id){
-        String[] list = {"xiaoqiu","sun","sam","tony","scaliy","febob"};
-        if (!id.equals("abcdefg")){
-            System.out.println("====================发生错误====================");
+        List<MemberVO> list = new ArrayList<>();
+
+        for (int i=0;i<10;i++){
+            MemberVO mem = new MemberVO();
+            mem.setId("1111"+i);
+            mem.setUsername("user"+i);
+            list.add(mem);
         }
         return ResponseResult.e(ResponseCode.OK,list);
     }

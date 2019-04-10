@@ -1,4 +1,4 @@
-package cn.licoy.wdog.core.vo.app;
+package cn.licoy.wdog.core.dto.app.activity;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;

@@ -47,17 +47,19 @@ public class ActivityAddDTO {
 
     private Integer limitQuota;	//活动名额，默认不限
 
-    private Boolean isBlackList;	//是否黑名单限制(0=true;1=false)
+    private Integer isBlackList;	//是否黑名单限制(0=true;1=false)
 
-    private Boolean isReview;   //是否人工审核
+    private Integer isReview;   //是否人工审核
 
     private Integer status;  //活动状态
 
-    private String groupId;	//分组限制
+    private String otherAdmins;     //  其他管理员   ==>     t_activityAdmins {id,activityId,userId}
 
-    private String rules;   //  表单规则
+    private String groupId;	//分组限制  ==>   t_groupLimit {id,actiId,groupId}
 
-    private String scoreData;
+    private String rules;   //  表单规则 ==>   t_activityForm {id,activityId,rules,status}
+
+    private String scoreData; //    ==>   t_scoreSetting {id,aid,awardName,awardNum,awardScore}
 
     /**********************************************************************/
 

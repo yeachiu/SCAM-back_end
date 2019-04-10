@@ -34,15 +34,15 @@ public class Activity extends Schema implements Serializable {
 	
 	private String organizerId;	//主办方
 	
-	private String otherAdminIds;	//活动管理员,用逗号连接的数组
+//	private String otherAdminIds;	//活动管理员,用逗号连接的数组 	==> userId -> activityObjects --> 表activity_admins
 	
-	private String groupId;	//分组限制,用逗号连接的数组
+//	private String groupId;	//分组限制,用逗号连接的数组==>用途：userId -> groupId -> activityObjects -->另外建表
 	
 	private Integer limitQuota;	//活动名额
 	
-	private Boolean isblackList;	//是否黑名单限制(0=true;1=false)
+	private Integer isblackList;	//是否黑名单限制(0=true;1=false)
 	
-	private Boolean isreview;	//是否人工审核(0=true;1=false)
+	private Integer isreview;	//是否人工审核(0=true;1=false)
 	
 	private String associationId;	//
 	
