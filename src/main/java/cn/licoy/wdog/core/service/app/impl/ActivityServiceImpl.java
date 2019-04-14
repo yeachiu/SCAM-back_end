@@ -11,6 +11,8 @@ import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
+import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -18,11 +20,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -38,6 +40,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     private ActivityLimitService limitService;
     @Autowired
     private ActivityFormService formService;
+    @Autowired
+    private ScoreSettingService scoreService;
 
     /**
      * 活动列表
@@ -81,6 +85,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
      *  scoreData=[{"awardName":"参与成功","awardNum":"","awardScore":2}])
      **/
     @Override
+    @Transactional
     public void add(ActivityAddDTO addDTO) {
         Activity findActivity = this.selectOne(new EntityWrapper<Activity>().eq("title",addDTO.getTitle()));
         if(findActivity != null){
@@ -89,18 +94,18 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         }
         findActivity = new Activity();
         BeanUtils.copyProperties(addDTO,findActivity);
+        findActivity.setCreateTime(new Date());
+        findActivity.setCreateUser(userService.getCurrentUser().getId());
         System.out.println("======================= findActivity:" + findActivity.toString());
-        String actiId = UUID.randomUUID().toString();
-        findActivity.setId(actiId);
         boolean isSuccess = this.insert(findActivity);
         if (!isSuccess){
             throw RequestException.fail("活动创建失败");
         }
-
+        String actiId = findActivity.getId();
         //  其他管理员   ==>     t_activityAdmins {id,activityId,userId}
-        if (!addDTO.getOtherAdmins().equals("")){
+        if (!addDTO.getOtherAdmin().equals("")){
             //字符串转数组
-            String[] adminIds = addDTO.getOtherAdmins().split(",");
+            String[] adminIds = addDTO.getOtherAdmin().split(",");
             List<ActivityAdmins> adminsList = new ArrayList<>();
             ActivityAdmins admin = new ActivityAdmins();
             SysUser user = null;
@@ -112,6 +117,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
                 }
                 admin.setActivityId(actiId);
                 admin.setUserId(uid);
+                admin.setCreateTime(new Date());
+                admin.setCreateUser(userService.getCurrentUser().getId());
                 adminsList.add(admin);
             }
             adminsService.insertBatch(adminsList);
@@ -132,6 +139,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
                 ActivityLimit limit = new ActivityLimit();
                 limit.setAid(actiId);
                 limit.setGid(gid);
+                limit.setCreateTime(new Date());
+                limit.setCreateUser(userService.getCurrentUser().getId());
                 limitList.add(limit);
             }
             limitService.insertBatch(limitList);
@@ -146,6 +155,15 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         }
         //    ==>   t_scoreSetting {id,aid,awardName,awardNum,awardScore}
         //1.字符串数组转json对象数组
+        if (!addDTO.getScoreData().equals("")){
+            List<ScoreSetting> scoreList = JSONArray.parseArray(addDTO.getScoreData(),ScoreSetting.class);
+            if (scoreList == null && scoreList.size()< 1){
+                throw RequestException.fail("活动学分数据异常");
+            }
+            scoreService.insertBatch(scoreList);
+
+        }
+
     }
 
     @Override

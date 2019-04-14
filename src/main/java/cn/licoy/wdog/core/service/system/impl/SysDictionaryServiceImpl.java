@@ -7,6 +7,7 @@ import cn.licoy.wdog.core.mapper.system.SysDictionaryMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.system.DictionaryVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -15,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -29,6 +27,16 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
     private SysUserService userService;
     @Autowired
     private SysDictionaryMapper mapper;
+
+    @Override
+    public SysDictionary getDictNode(String id) {
+        SysDictionary dictionary = this.selectById(id);
+        if (dictionary == null )
+            throw RequestException.fail("数据错误，不存在ID为" + id + "的字典条目");
+        if (dictionary.getParentId() != null && !dictionary.getParentId().equals("ROOT"))
+            this.findParent(dictionary);
+        return dictionary;
+    }
 
     @Override
     public List<SysDictionary> list() {
@@ -45,13 +53,13 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
     }
 
     @Override
-    public List<SysDictionary> listByCode(String dictCode) {
+    public List<DictionaryVO> listByCode(String dictCode) {
 
-        List<SysDictionary> dictionaries = mapper.findByDictCode(dictCode);
-        if (dictionaries != null && dictionaries.size() > 0){
-           return null;
+        List<DictionaryVO> dictVO = mapper.findByDictCode(dictCode);
+        if (dictVO != null && dictVO.size() > 0){
+            dictVO.forEach(this::findAllVOChild);
         }
-        return dictionaries;
+        return dictVO;
     }
 
     @Override
@@ -98,6 +106,25 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
         if (dictionaries != null && dictionaries.size() > 0){
             dictionaries.forEach(this::findAllChild);
         }
+    }
+
+    @Override
+    public void findAllVOChild(DictionaryVO dictionary) {
+        List<DictionaryVO> dictVOs = mapper.selectVOList(dictionary.getId());
+        dictionary.setChildren(dictVOs);
+        if (dictVOs != null && dictVOs.size() > 0){
+            dictVOs.forEach(this::findAllVOChild);
+        }
+    }
+
+    @Override
+    public void findParent(SysDictionary dict) {
+        SysDictionary dictionary = this.selectById(dict.getParentId());
+        if (dictionary == null)
+            throw RequestException.fail("删除失败，不存在ID为" + dict.getParentId() + "的字典条目");
+        dict.setParent(dictionary);
+        if (dictionary.getParentId() != null && !dictionary.getParentId().equals("ROOT"))
+            this.findParent(dictionary);
     }
 
     @Override

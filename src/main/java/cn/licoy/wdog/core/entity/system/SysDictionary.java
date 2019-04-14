@@ -32,4 +32,7 @@ public class SysDictionary extends Schema implements Serializable {
 	@TableField(exist = false)
 	private List<SysDictionary> children;
 
+	@TableField(exist = false)
+	private SysDictionary parent;
+
 }

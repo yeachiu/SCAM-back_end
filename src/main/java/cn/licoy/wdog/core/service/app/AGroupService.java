@@ -1,7 +1,8 @@
 package cn.licoy.wdog.core.service.app;
 
-import cn.licoy.wdog.core.dto.app.AGroupDTO;
+import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
+import cn.licoy.wdog.core.vo.app.GroupVO;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface AGroupService extends IService<AGroup> {
      * 获取分组列表
      * @return
      */
-    List<AGroup> list();
+    List<GroupVO> list();
 
     /**
      * 添加分组
@@ -32,5 +33,19 @@ public interface AGroupService extends IService<AGroup> {
      * @param id
      */
     void remove(String id);
+
+    /**
+     * 分组详情
+     * @param id
+     * @return
+     */
+    GroupVO getGroupDetailById (String id);
+
+    /**
+     * 匹配分组信息,返回ID
+     * @param group
+     * @return
+     */
+    String existGroup (AGroup group);
 	
 }
