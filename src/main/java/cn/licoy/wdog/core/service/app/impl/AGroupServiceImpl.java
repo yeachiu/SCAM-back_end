@@ -77,7 +77,7 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
     public void add(AGroupDTO dto) {
         List<AGroup> addAGroups = new ArrayList<>();
         AGroup result = new AGroup();
-        AGroup add = new AGroup();
+
         String dictName = dictionaryService.selectById(dto.getDictId()).getDictName();
         /** 是否存在学院专业分组*/
         AGroup institute = this.selectOne(new EntityWrapper<AGroup>()
@@ -117,12 +117,19 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
             addAGroups.add(institute_period);
         }
         /** 班级分组 */
-        BeanUtils.copyProperties(dto,add);
-        add.setTypeSymbol(ConstCode.SYMBOL_USER);
         for (int i=0; i<dto.getClassNum(); i++){
-            add.setName(dto.getPeriod() + ConstCode.PERIOD_NAME + dictName + (i+1) + ConstCode.CLASS_NAME);
-            add.setWhatClass(i + 1);
-            addAGroups.add(add);
+            AGroup add = this.selectOne(new EntityWrapper<AGroup>()
+                .eq("period",dto.getPeriod()).and()
+                .eq("dict_id",dto.getDictId()).and()
+                .eq("what_class",i+1));
+            if (add == null){
+                add = new AGroup();
+                BeanUtils.copyProperties(dto,add);
+                add.setTypeSymbol(ConstCode.SYMBOL_USER);
+                add.setName(dto.getPeriod() + ConstCode.PERIOD_NAME + dictName + (i+1) + ConstCode.CLASS_NAME);
+                add.setWhatClass(i + 1);
+                addAGroups.add(add);
+            }
         }
         //设置共同信息
         SysUserVO currentUser = userService.getCurrentUser();
@@ -138,11 +145,12 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
     }
 
     @Override
-    public void update(String id, AGroupDTO dto) {
+    public void update(String id, AGroupUpdateDTO dto) {
         AGroup group = this.selectById(id);
         if (group == null)
             throw RequestException.fail("更新失败，不存在ID为" + id + "的分组");
-        BeanUtils.copyProperties(dto,group);
+//        BeanUtils.copyProperties(dto,group);
+        group.setName(dto.getClassName());
         group.setModifyTime(new Date());
         SysUserVO currentUser = userService.getCurrentUser();
         if (currentUser == null)
