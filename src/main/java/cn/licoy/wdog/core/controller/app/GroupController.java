@@ -39,7 +39,7 @@ public class GroupController {
     @ApiOperation(value = "添加分组")
     @SysLogs("添加分组")
     public ResponseResult update(@PathVariable("id") @ApiParam("分组ID") String id,
-                                 @RequestBody @Validated @ApiParam("分组数据") AGroupDTO dto){
+                                 @RequestBody @Validated @ApiParam("分组数据") AGroupUpdateDTO dto){
         groupService.update(id,dto);
         return ResponseResult.e(ResponseCode.OK);
     }
