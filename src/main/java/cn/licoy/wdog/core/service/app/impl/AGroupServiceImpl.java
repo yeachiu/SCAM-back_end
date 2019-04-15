@@ -3,6 +3,8 @@ package cn.licoy.wdog.core.service.app.impl;
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
+import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
+import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
 import cn.licoy.wdog.core.mapper.app.AGroupMapper;
@@ -175,33 +177,63 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
      */
     @Override
     public GroupVO getGroupDetailById(String id) {
-        AGroup group = this.selectById(id);
-        if (group == null)
-            throw  RequestException.fail(String.format("数据错误，不存在ID为%s的分组",id));
-        SysDictionary dictionary = dictionaryService.getDictNode(group.getDictId());
-        if (dictionary == null)
-            throw  RequestException.fail(String.format("数据错误，不存在ID为%s的數字字典",group.getDictId()));
         GroupVO groupVO = new GroupVO();
-        BeanUtils.copyProperties(group,groupVO);
-        groupVO.setClassName(group.getName());
-        groupVO.setProfession(dictionary.getDictName());
-        if (dictionary.getParent() != null)
-            groupVO.setInstitute(dictionary.getDictName());
 
+        AGroup group = this.selectById(id);
+//        if (group == null) {
+//            throw RequestException.fail(String.format("数据错误，不存在ID为%s的分组", id));
+//
+//        }
+        if (group != null){
+            SysDictionary dictionary = dictionaryService.getDictNode(group.getDictId());
+            if (dictionary == null)
+                throw  RequestException.fail(String.format("数据错误，不存在ID为%s的數字字典",group.getDictId()));
+
+            BeanUtils.copyProperties(group,groupVO);
+            groupVO.setClassName(group.getName());
+            groupVO.setProfession(dictionary.getDictName());
+            if (dictionary.getParent() != null)
+                groupVO.setInstitute(dictionary.getDictName());
+        }
         return groupVO;
     }
 
     @Override
-    public String existGroup(AGroup groupSource) {
+    public Boolean existGroup(ExistGroupDTO groupSource) {
         EntityWrapper wrapper = new EntityWrapper();
-        wrapper.eq("dictId",groupSource.getDictId())
+        wrapper.eq("dict_id",groupSource.getDictId())
                 .and()
                 .eq("period",groupSource.getPeriod())
                 .and()
-                .eq("whatClass",groupSource.getWhatClass());
+                .eq("what_class",groupSource.getWhatClass());
         AGroup groupCompare = this.selectOne(wrapper);
         if (groupCompare == null)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String getIdByDatail(ExistGroupDTO groupSource) {
+        EntityWrapper wrapper = new EntityWrapper();
+        wrapper.eq("dict_id",groupSource.getDictId())
+                .and()
+                .eq("period",groupSource.getPeriod())
+                .and()
+                .eq("what_class",groupSource.getWhatClass());
+        AGroup groupCompare = this.selectOne(wrapper);
+        if (groupCompare == null) {
+            RequestException.fail("暂未有对应用户分组，请先添加");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> === 无法匹配分组");
             return "";
+        }
+//        groupCompare = this.selectOne(new EntityWrapper<AGroup>()
+//                .eq("dict_id",groupSource.getDictId())
+//                .isNull("period,class_num,what_class"));
+//        if(groupCompare == null){
+//            RequestException.fail("数据错误(不存在该dictId),请联系管理员处理");
+//            return "";
+//        }
+
         return groupCompare.getId();
     }
 }
