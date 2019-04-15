@@ -98,6 +98,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         if (student == null)
             throw RequestException.fail("更新失败，不存在ID为" + id + "的学生信息");
         BeanUtils.copyProperties(dto,student);
+        //匹配并SET学生分组信息
+        ExistGroupDTO group = new ExistGroupDTO();
+        BeanUtils.copyProperties(dto,group);
+        String groupId = groupService.getIdByDatail(group);
+        student.setGroupId(groupId);
         student.setModifyTime(new Date());
         SysUserVO currentUser = userService.getCurrentUser();
         if (currentUser == null)
