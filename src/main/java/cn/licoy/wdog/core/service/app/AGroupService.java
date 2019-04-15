@@ -26,7 +26,7 @@ public interface AGroupService extends IService<AGroup> {
      * @param id
      * @param dto
      */
-    void update(String id,AGroupDTO dto);
+    void update(String id,AGroupUpdateDTO dto);
 
     /**
      * 删除分组
