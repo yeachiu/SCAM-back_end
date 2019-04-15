@@ -68,18 +68,18 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
     @Override
     public void add(StudentDTO dto) {
         EntityWrapper wrapper = new EntityWrapper();
-        wrapper.eq("stuNum",dto.getStuNum());
+        wrapper.eq("stu_num",dto.getStuNum());
         Student student = this.selectOne(wrapper);
         if (student != null)
             throw RequestException.fail(String.format("已经存在学号为%s的学生信息",dto.getStuNum()));
         //复制信息
+        student = new Student();
         BeanUtils.copyProperties(dto,student);
         //匹配并SET学生分组信息
-        AGroup group = new AGroup();
+        ExistGroupDTO group = new ExistGroupDTO();
         BeanUtils.copyProperties(dto,group);
-        String groupId = groupService.existGroup(group);
-        if (groupId.equals(""))
-            student.setGroupId(groupId);
+        String groupId = groupService.getIdByDatail(group);
+        student.setGroupId(groupId);
 
         //时间和操作者
         SysUserVO currentUser = userService.getCurrentUser();
