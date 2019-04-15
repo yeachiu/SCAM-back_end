@@ -4,6 +4,7 @@ import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
+import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.service.app.AGroupService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
