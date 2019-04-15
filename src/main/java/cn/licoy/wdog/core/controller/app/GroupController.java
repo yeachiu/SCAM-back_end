@@ -52,4 +52,11 @@ public class GroupController {
         groupService.remove(id);
         return ResponseResult.e(ResponseCode.OK);
     }
+    
+    @PostMapping(value = {"/exist"})
+    @ApiOperation(value = "删除分组")
+    @SysLogs("删除分组")
+    public ResponseResult existGroup(@RequestBody @Validated @ApiParam("分组数据") ExistGroupDTO dto){
+        return ResponseResult.e(ResponseCode.OK,groupService.existGroup(dto));
+    }
 }
