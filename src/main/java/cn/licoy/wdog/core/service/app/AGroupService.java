@@ -43,9 +43,16 @@ public interface AGroupService extends IService<AGroup> {
 
     /**
      * 匹配分组信息,返回ID
-     * @param group
+     * @param detail
      * @return
      */
-    String existGroup (AGroup group);
+    String getIdByDatail(ExistGroupDTO detail);
+
+    /**
+     * 是否存在分组
+     * @param dto
+     * @return
+     */
+    Boolean existGroup (ExistGroupDTO dto);
 	
 }
