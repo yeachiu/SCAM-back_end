@@ -124,6 +124,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         Student student = this.selectById(id);
         if(student==null) throw RequestException.fail("学生信息不存在！");
         BeanUtils.copyProperties(updateDTO,student);
+        //匹配并SET学生分组信息
+        ExistGroupDTO group = new ExistGroupDTO();
+        BeanUtils.copyProperties(updateDTO,group);
+        String groupId = groupService.getIdByDatail(group);
+        student.setGroupId(groupId);
+        student.setModifyTime(new Date());
+        SysUserVO currentUser = userService.getCurrentUser();
+        if (currentUser == null)
+            throw RequestException.fail("添加失败because获取用户信息失败");
+        student.setModifyUser(currentUser.getId());
         try {
             this.updateById(student);
         }catch (Exception e){
