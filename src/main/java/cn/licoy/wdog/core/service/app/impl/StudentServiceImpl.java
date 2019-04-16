@@ -39,19 +39,47 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
     private StudentService studentService;
 
     @Override
+    public List<StudentVO> allList() {
+        List<StudentVO> studentVOList = new ArrayList<>();
+        //1.获取所有符合的Student
+        List<Student> students = this.selectList(new EntityWrapper<Student>());
+        if (students != null && students.size() > 0){
+//            for (int i=0; i<students.size(); i++){
+            for (Student stu : students) {
+                //根据stu.groupId获取institute,profession,period,whatClass,className
+                GroupVO groupVO = groupService.getGroupDetailById(stu.getGroupId());
+                if (groupVO == null) {
+                    groupVO = new GroupVO();
+                    throw RequestException.fail("数据错误,获取ID为" + stu.getGroupId() + "的分组详情失败");
+                }
+                StudentVO studentVO = new StudentVO();
+                studentVO.setId(stu.getId());
+                studentVO.setRealName(stu.getRealName());
+                studentVO.setStuNum(stu.getStuNum());
+                studentVO.setGroupVO(groupVO);
+                studentVOList.add(studentVO);
+            }
+        }
+
+        return studentVOList;
+    }
+
+    @Override
     public Page<StudentVO> list(FindStudentDTO findStudentDTO) {
         List<StudentVO> studentVOList = new ArrayList<>();
         //1.获取所有符合的Student
         EntityWrapper<Student> wrapper = new EntityWrapper<>();
-        wrapper.orderBy("stuNum",findStudentDTO.getAsc());
+        wrapper.orderBy("stu_num",findStudentDTO.getAsc());
         List<Student> students = this.selectList(wrapper);
         if (students != null && students.size() > 0){
 //            for (int i=0; i<students.size(); i++){
             for (Student stu : students) {
                 //根据stu.groupId获取institute,profession,period,whatClass,className
                 GroupVO groupVO = groupService.getGroupDetailById(stu.getGroupId());
-                if (groupVO == null)
-                    throw RequestException.fail("数据错误,获取ID为"+stu.getGroupId()+"的分组详情失败");
+                if (groupVO == null) {
+                    groupVO = new GroupVO();
+                    throw RequestException.fail("数据错误,获取ID为" + stu.getGroupId() + "的分组详情失败");
+                }
                 StudentVO studentVO = new StudentVO();
                 studentVO.setId(stu.getId());
                 studentVO.setRealName(stu.getRealName());
@@ -139,5 +167,34 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         }catch (Exception e){
             throw RequestException.fail("学生信息更新失败！",e);
         }
+    }
+
+    @Override
+    public Boolean existStudent(String id) {
+        Student student = this.selectById(id);
+        if(student==null)
+            return false;
+        return true;
+    }
+
+    @Override
+    public StudentVO getById(String id) {
+        Student student = this.selectById(id);
+        if (student == null){
+            throw RequestException.fail(String.format("获取信息失败,不存在ID为%s的学生信息"));
+        }
+
+        //根据stu.groupId获取institute,profession,period,whatClass,className
+        GroupVO groupVO = groupService.getGroupDetailById(student.getGroupId());
+        if (groupVO == null) {
+            groupVO = new GroupVO();
+            throw RequestException.fail("数据错误,获取ID为" + student.getGroupId() + "的分组详情失败");
+        }
+        StudentVO studentVO = new StudentVO();
+        studentVO.setId(student.getId());
+        studentVO.setRealName(student.getRealName());
+        studentVO.setStuNum(student.getStuNum());
+        studentVO.setGroupVO(groupVO);
+        return studentVO;
     }
 }
