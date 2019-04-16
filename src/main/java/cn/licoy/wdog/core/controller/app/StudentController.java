@@ -31,5 +31,10 @@ public class StudentController implements CrudController<StudentVO,StudentDTO,St
         return studentService;
     }
 
-
+    @PostMapping(value = {"/alllist"})
+    @ApiOperation(value = "获取学生列表")
+    @SysLogs("获取学生列表")
+    public ResponseResult allList(){
+        return ResponseResult.e(ResponseCode.OK,studentService.allList());
+    }
 }
