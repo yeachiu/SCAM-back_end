@@ -14,6 +14,12 @@ public interface StudentService extends IService<Student> ,
         BaseService<StudentVO,StudentDTO,StudentUpdateDTO,String,FindStudentDTO> {
 
     /**
+     * 学生信息列表（不分页）
+     * @return
+     */
+    public List<StudentVO> allList();
+
+    /**
      * 学生信息列表
      * @return
      */
@@ -37,4 +43,14 @@ public interface StudentService extends IService<Student> ,
      * @param id
      */
     void remove(String id);
+
+    /**
+     * 验证学生信息
+     */
+    Boolean existStudent(String id);
+
+    /**
+     * 根据ID获取学生信息
+     */
+    StudentVO getById(String id);
 }
