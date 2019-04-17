@@ -24,5 +24,7 @@ public class ConstCode {
     public static final String PERIOD_NAME = "级";
     public static final String CLASS_NAME = "班";
 
-    /** 签到 **/
+    /** Boolean类型 **/
+    public static final Integer TRUE = 0;
+    public static final Integer FALSE = 1;
 }
