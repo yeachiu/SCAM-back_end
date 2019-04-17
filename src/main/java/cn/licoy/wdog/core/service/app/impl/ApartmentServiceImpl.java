@@ -69,8 +69,8 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
             throw RequestException.fail(String.format("更新失败，不存在ID为%s的部门信息",id));
         }
         Boolean existStudent = studentService.existStudent(dto.getApartAdmin());
-        if (existStudent){
-            throw RequestException.fail("数据错误，不存在ID为%s的学生");
+        if (!existStudent){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生",dto.getApartAdmin()));
         }
         BeanUtils.copyProperties(dto,apartment);
         apartment.setModifyTime(new Date());
