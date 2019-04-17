@@ -31,7 +31,12 @@ public interface ApartmentService extends IService<Apartment> {
      * @param id
      */
     void remove(String id);
-
+    
+    /**
+     * 验证部门信息
+     */
+    Boolean existApartment(String id);
+    
     /**
      * 根据ID获取部门数据
      */
