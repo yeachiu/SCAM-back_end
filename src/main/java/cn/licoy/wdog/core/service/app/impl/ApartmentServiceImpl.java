@@ -85,7 +85,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
     public void remove(String id) {
         Apartment apartment = this.selectById(id);
         if(apartment == null)
-            throw RequestException.fail(String.format("删除失败，不存在ID为%s的学生信息"));
+            throw RequestException.fail(String.format("删除失败，不存在ID为%s的学生信息",id));
         this.deleteById(id);
     }
 
