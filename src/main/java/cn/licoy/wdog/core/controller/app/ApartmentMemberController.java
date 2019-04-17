@@ -30,10 +30,10 @@ public class ApartmentMemberController {
         return ResponseResult.e(ResponseCode.OK,memberService.list(id));
     }
 
-    @PostMapping(value = {"/add/{id}"})
+    @PostMapping(value = {"/add"})
     @ApiOperation(value = "添加成员")
     @SysLogs("添加成员")
-    public ResponseResult add(@PathVariable @ApiParam(value = "部门ID") String id, @RequestBody @Validated @ApiParam ApartmentMemberDTO addDTO){
+    public ResponseResult add(@RequestBody @Validated @ApiParam ApartmentMemberDTO addDTO){
         memberService.add(addDTO);
         return ResponseResult.e(ResponseCode.OK);
     }
