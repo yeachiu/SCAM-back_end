@@ -8,6 +8,7 @@ import cn.licoy.wdog.core.entity.system.SysUser;
 import cn.licoy.wdog.core.mapper.app.ActivityMapper;
 import cn.licoy.wdog.core.service.app.*;
 import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
@@ -63,15 +64,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     public Page<ActivityVO> getCancelActivityBySplitPage(FindActivityDTO findActivityDTO){
         return null;
     }
-    /**
-     * 更改状态
-     * @param statusChangeDTO
-     *
-     */
-    @Override
-    public void statusChange(StatusChangeDTO statusChangeDTO){
-
-    }
+    
     /**============================================= >>>> addDTO:
      * ActivityAddDTO(
      *  title=信息, description=信息系, pictureUrl=/img_20190409010927.jpg,
@@ -168,16 +161,49 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
 
     @Override
     public void update(String id,ActivityUpdateDTO updateDTO) {
-
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
     }
 
     @Override
     public void cancel(String id) {
-
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
     }
 
     @Override
     public void publish(String id) {
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
+    }
 
+    /**
+     * 更改状态
+     * @param statusChangeDTO
+     *
+     */
+    @Override
+    public void statusChange(StatusChangeDTO statusChangeDTO){
+        Activity activity = this.selectById(statusChangeDTO.getAid());
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",statusChangeDTO.getAid()));
+        }
+    }
+
+    @Override
+    public ActivityAbstractVO getAbstractById(String id) {
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
+        ActivityAbstractVO abstractVO = new ActivityAbstractVO();
+        BeanUtils.copyProperties(activity,abstractVO);
+        return abstractVO;
     }
 }
