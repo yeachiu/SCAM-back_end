@@ -18,7 +18,7 @@ public class Apartment extends Schema implements Serializable {
 	
 	private String apartAdmin;	//
 	
-	private Object about;	//
+	private String about;	//
 	
 	private static final long serialVersionUID = 1L;
 
