@@ -7,6 +7,8 @@ import lombok.Data;
 public class GroupVO {
 
     private String id;
+    
+    private String dictId;
 
     private Integer period;	//年级，为null表示为专业分组
 
