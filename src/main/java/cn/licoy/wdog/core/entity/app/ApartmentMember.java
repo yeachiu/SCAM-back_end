@@ -18,7 +18,7 @@ public class ApartmentMember extends Schema implements Serializable {
 	
 	private String uid;	//
 	
-	private Boolean isadmin;	//部门管理员
+	private Integer isadmin;	//部门管理员
 	
 	private static final long serialVersionUID = 1L;
 
