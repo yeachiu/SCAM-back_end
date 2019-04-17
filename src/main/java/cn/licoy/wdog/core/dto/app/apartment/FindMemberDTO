@@ -1,0 +1,9 @@
+package cn.licoy.wdog.core.dto;
+
+import lombok.Data;
+
+@Data
+public class FindMemberDTO extends SplitPageDTO {
+
+    private String id;
+}
