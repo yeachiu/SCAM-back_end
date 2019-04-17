@@ -1,7 +1,10 @@
 package cn.licoy.wdog.core.vo.app;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class ActivityVO {
 
     private String id;
@@ -30,9 +33,9 @@ public class ActivityVO {
 
     private Integer limitQuota;	//活动名额 默认不限
 
-    private Boolean isblackList;	//是否黑名单限制(0=true;1=false)
+    private Integer isblackList;	//是否黑名单限制(0=true;1=false)
 
-    private Boolean isreview;	//是否人工审核(0=true;1=false)
+    private Integer isreview;	//是否人工审核(0=true;1=false)
 
     private String associationId;
 
