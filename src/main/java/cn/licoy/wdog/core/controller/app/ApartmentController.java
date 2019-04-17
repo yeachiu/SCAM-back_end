@@ -52,21 +52,6 @@ public class ApartmentController {
         return ResponseResult.e(ResponseCode.OK);
     }
 
-    @PostMapping(value = {"/member/list/{id}"})
-    @ApiOperation(value = ("部门成员列表"))
-    @SysLogs("部门成员列表")
-    public ResponseResult memberList(@PathVariable("id") @ApiParam(value = "部门ID") String id){
-        List<MemberVO> list = new ArrayList<>();
-
-        for (int i=0;i<10;i++){
-            MemberVO mem = new MemberVO();
-            mem.setId("1111"+i);
-            mem.setRealName("user"+i);
-            list.add(mem);
-        }
-        return ResponseResult.e(ResponseCode.OK,list);
-    }
-
     @PostMapping(value = {"/group/list/{id}"})
     @ApiOperation(value = ("分组列表"))
     @SysLogs("分组列表")
