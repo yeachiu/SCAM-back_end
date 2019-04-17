@@ -181,7 +181,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
     public StudentVO getById(String id) {
         Student student = this.selectById(id);
         if (student == null){
-            throw RequestException.fail(String.format("获取信息失败,不存在ID为%s的学生信息"));
+            throw RequestException.fail(String.format("获取信息失败,不存在ID为%s的学生信息",id));
         }
 
         //根据stu.groupId获取institute,profession,period,whatClass,className
