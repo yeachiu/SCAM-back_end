@@ -1,9 +1,24 @@
 package cn.licoy.wdog.core.service.app;
 
+import cn.licoy.wdog.common.service.BaseService;
+import cn.licoy.wdog.core.dto.FindMemberDTO;
+import cn.licoy.wdog.core.dto.app.apartment.ApartmentMemberDTO;
 import cn.licoy.wdog.core.entity.app.ApartmentMember;
+import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.util.List;
 
 public interface ApartmentMemberService extends IService<ApartmentMember>,
         BaseService<ApartmentMemberVO,ApartmentMemberDTO,ApartmentMemberDTO,String,FindMemberDTO>{
 
+    /**
+     * 部门成员列表
+     */
+    List<ApartmentMemberVO> list(String id);
+
+    /**
+     * 部门成员信息
+     */
+    ApartmentMemberVO getById(String id, String uid);
 }
