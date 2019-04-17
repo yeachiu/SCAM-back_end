@@ -60,5 +60,9 @@ public interface ActivityService extends IService<Activity> {
      * @param statusChangeDTO
      */
     void statusChange(StatusChangeDTO statusChangeDTO);
-
+    
+    /**
+     * 获取活动简要信息
+     */
+    ActivityAbstractVO getAbstractById(String id);
 }
