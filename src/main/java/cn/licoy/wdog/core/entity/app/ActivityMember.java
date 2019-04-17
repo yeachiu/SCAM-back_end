@@ -18,7 +18,7 @@ public class ActivityMember extends Schema implements Serializable {
 	
 	private String uid;	//
 	
-	private Boolean checkin;	//签到管理
+	private Integer checkin;	//签到管理
 	
 	private static final long serialVersionUID = 1L;
 
