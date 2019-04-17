@@ -90,6 +90,15 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
     }
 
     @Override
+    public Boolean existApartment(String id) {
+        Apartment apartment = this.selectById(id);
+        if (apartment == null){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public ApartmentVO getById(String id) {
         Apartment apartment = this.selectById(id);
         if (apartment == null){
@@ -100,9 +109,5 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         BeanUtils.copyProperties(apartment,apartmentVO);
         apartmentVO.setApartAdmin(apartAdmin);
         return apartmentVO;
-    }
-    @Override
-    public void remove(String id) {
-
     }
 }
