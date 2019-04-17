@@ -50,6 +50,7 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
             groupVO.setClassName(group.getName());
             //根据dictId查找institute/profession(parent的dictCode)
             if (group.getDictId() != null){
+                groupVO.setDictId(group.getDictId());
                 SysDictionary dict = dictionaryService.getDictNode(group.getDictId());
                 if (dict == null){
                     throw RequestException.fail("数据错误，不存在ID为%s的组织机构字典");
@@ -185,6 +186,7 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
 //
 //        }
         if (group != null){
+            groupVO.setDictId(group.getDictId());
             SysDictionary dictionary = dictionaryService.getDictNode(group.getDictId());
             if (dictionary == null)
                 throw  RequestException.fail(String.format("数据错误，不存在ID为%s的數字字典",group.getDictId()));
