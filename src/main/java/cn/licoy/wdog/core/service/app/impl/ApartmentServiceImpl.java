@@ -1,28 +1,39 @@
 package cn.licoy.wdog.core.service.app.impl;
 
+import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.dto.app.apartment.ApartmentDTO;
+import cn.licoy.wdog.core.dto.app.apartment.FindApartmentDTO;
 import cn.licoy.wdog.core.entity.app.Apartment;
 import cn.licoy.wdog.core.mapper.app.ApartmentMapper;
+import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
+import cn.licoy.wdog.core.service.app.StudentService;
+import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.StudentVO;
 import cn.licoy.wdog.core.vo.app.ApartmentVO;
+import cn.licoy.wdog.core.vo.system.SysUserVO;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @Transactional
 public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment> implements ApartmentService{
 
-    @Override
-    public List<ApartmentVO> list() {
-        return null;
-    }
-
     @Autowired
     private StudentService studentService;
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private ApartmentMemberService memberService;
 
     @Override
     public Page<ApartmentVO> list(FindApartmentDTO findDTO) {
@@ -59,6 +70,8 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         apartment.setCreateTime(new Date());
         apartment.setCreateUser(currentUser.getId());
         this.insert(apartment);
+
+        memberService.addAdmin(apartment.getId(),dto.getApartAdmin());
 
     }
 

@@ -7,10 +7,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Licoy
- * @version 2018/4/18/11:34
- */
+
 @Data
 public class SysUserVO {
 
@@ -21,5 +18,8 @@ public class SysUserVO {
     private List<SysRole> roles;
     private Date createDate;
     private List<SysResource> resources;
+
+    private String aparId;
+    private String stuId;
 
 }

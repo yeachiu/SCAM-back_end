@@ -1,5 +1,6 @@
 package cn.licoy.wdog.core.vo.app;
 
+import cn.licoy.wdog.core.vo.StudentVO;
 import lombok.Data;
 
 @Data

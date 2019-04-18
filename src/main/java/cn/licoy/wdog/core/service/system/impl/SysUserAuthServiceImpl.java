@@ -7,15 +7,19 @@ import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
 import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.system.SysUserAuthMapper;
+import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import cn.licoy.wdog.core.service.app.StudentService;
+import cn.licoy.wdog.core.service.system.FindUserAuthDTO;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,23 +28,42 @@ import java.util.Map;
 @Transactional
 public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUserAuth> implements SysUserAuthService{
 
-    @Autowired
-    SysUserAuthService sysUserAuthService;
 
     @Autowired
     StudentService studentService;
+    @Autowired
+    SysUserAuthMapper mapper;
 
     @Override
     public List<SysUserAuth> list() {
-        return sysUserAuthService.selectList(new EntityWrapper<SysUserAuth>()
+        return this.selectList(new EntityWrapper<SysUserAuth>()
                 .eq("status",ConstCode.USER_AUTH_INAUTH));
     }
 
+    @Override
+    public List<UserAuthVO> alreadyList() {
+        List<UserAuthVO> userAuthVOList = mapper.alreadyList();
+        if (userAuthVOList == null)   return null;
+        return userAuthVOList;
+    }
+
+    @Override
+    public Page<UserAuthVO> alreadyList(FindUserAuthDTO dto) {
+        List<UserAuthVO> userAuthVOList = this.alreadyList();
+        Page<UserAuthVO> authVOPage = new Page<>(dto.getPage(),dto.getPageSize());
+        authVOPage.setRecords(userAuthVOList);
+        return authVOPage;
+    }
+
+    @Override
+    public List<UserAuthVO> UserAuthListExAdmin() {
+        return null;
+    }
 
     @Override
     public Integer selectAuthStatusByUid(String uid) {
 
-        List<SysUserAuth> userAuths = sysUserAuthService.selectList(new EntityWrapper<SysUserAuth>()
+        List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
                 .eq("uid",uid)
                 .notIn("status",ConstCode.USER_AUTH_DELETE));
         if (userAuths.isEmpty() || userAuths.size() > 0){
@@ -51,13 +74,13 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 
     @Override
     public void cancelStudentAuth(String authId) {
-        SysUserAuth userAuth = sysUserAuthService.selectById(authId);
+        SysUserAuth userAuth = this.selectById(authId);
         if (userAuth == null){
             throw RequestException.fail("不存在该认证信息");
         }
         if (userAuth.getStatus().equals(ConstCode.USER_AUTH_INAUTH)){
             userAuth.setStatus(ConstCode.USER_AUTH_DELETE);
-            sysUserAuthService.updateById(userAuth);
+            this.updateById(userAuth);
         }else{
             throw RequestException.fail("操作失败");
         }
@@ -65,7 +88,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 
     @Override
     public void manualReview(UserAuthReviewDTO reviewDTO) {
-        SysUserAuth userAuth = sysUserAuthService.selectById(reviewDTO.getId());
+        SysUserAuth userAuth = this.selectById(reviewDTO.getId());
         if (userAuth == null){
             throw RequestException.fail("不存在该认证信息");
         }
@@ -75,7 +98,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         if (reviewDTO.getStatus().equals(ConstCode.USER_AUTH_ALREADY)
                 ||reviewDTO.getStatus().equals(ConstCode.USER_AUTH_FAIL)){
             userAuth.setStatus(reviewDTO.getStatus());
-            sysUserAuthService.updateById(userAuth);
+            this.updateById(userAuth);
         }else{
             throw RequestException.fail("操作失败");
         }
@@ -86,7 +109,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         SysUserAuth userAuth = new SysUserAuth();
         boolean bool = false;
         // 是否已认证过：数据还未同步；
-        List<SysUserAuth> userAuths = sysUserAuthService.selectList(new EntityWrapper<SysUserAuth>()
+        List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
                 .eq("uid",authdto.getUid())
                 .notIn("status",ConstCode.USER_AUTH_DELETE)
         );
@@ -138,4 +161,12 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 //            throw RequestException.fail("认证失败，请检查信息是否正确");
 //        }
     }
+
+//    private List<UserAuthVO> userAuthToVO(List<SysUserAuth> userAuths){
+//        List<UserAuthVO> userAuthVOList = new ArrayList<>();
+//        for (SysUserAuth userAuth : userAuths){
+//            UserAuthVO userAuthVO = new UserAuthVO();
+//            BeanUtils.copyProperties(userAuth,);
+//        }
+//    }
 }

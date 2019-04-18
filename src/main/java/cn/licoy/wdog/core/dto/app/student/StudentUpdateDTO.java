@@ -2,6 +2,7 @@ package cn.licoy.wdog.core.dto.app.student;
 
 import cn.licoy.wdog.core.vo.app.GroupVO;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Data
 public class StudentUpdateDTO {

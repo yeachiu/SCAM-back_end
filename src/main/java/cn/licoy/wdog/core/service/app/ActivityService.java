@@ -3,6 +3,7 @@ package cn.licoy.wdog.core.service.app;
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.Activity;
+import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;

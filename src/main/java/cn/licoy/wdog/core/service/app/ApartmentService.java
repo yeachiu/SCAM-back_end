@@ -1,7 +1,10 @@
 package cn.licoy.wdog.core.service.app;
 
+import cn.licoy.wdog.core.dto.app.apartment.ApartmentDTO;
+import cn.licoy.wdog.core.dto.app.apartment.FindApartmentDTO;
 import cn.licoy.wdog.core.entity.app.Apartment;
 import cn.licoy.wdog.core.vo.app.ApartmentVO;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;

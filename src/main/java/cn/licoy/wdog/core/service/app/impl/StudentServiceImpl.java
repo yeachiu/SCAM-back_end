@@ -1,6 +1,7 @@
 package cn.licoy.wdog.core.service.app.impl;
 
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.dto.app.student.FindStudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentUpdateDTO;
@@ -8,6 +9,7 @@ import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.mapper.app.StudentMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.StudentVO;
@@ -36,61 +38,30 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
     @Autowired
     private SysUserService userService;
     @Autowired
-    private StudentService studentService;
+    private ApartmentMemberService memberService;
+    @Autowired
+    private StudentMapper mapper;
 
     @Override
     public List<StudentVO> allList() {
-        List<StudentVO> studentVOList = new ArrayList<>();
-        //1.获取所有符合的Student
         List<Student> students = this.selectList(new EntityWrapper<Student>());
-        if (students != null && students.size() > 0){
-//            for (int i=0; i<students.size(); i++){
-            for (Student stu : students) {
-                //根据stu.groupId获取institute,profession,period,whatClass,className
-                GroupVO groupVO = groupService.getGroupDetailById(stu.getGroupId());
-                if (groupVO == null) {
-                    groupVO = new GroupVO();
-                    throw RequestException.fail("数据错误,获取ID为" + stu.getGroupId() + "的分组详情失败");
-                }
-                StudentVO studentVO = new StudentVO();
-                studentVO.setId(stu.getId());
-                studentVO.setRealName(stu.getRealName());
-                studentVO.setStuNum(stu.getStuNum());
-                studentVO.setGroupVO(groupVO);
-                studentVOList.add(studentVO);
-            }
-        }
-
-        return studentVOList;
+        if (students == null)   return null;
+        return this.studentToVO(students);
     }
 
     @Override
     public Page<StudentVO> list(FindStudentDTO findStudentDTO) {
-        List<StudentVO> studentVOList = new ArrayList<>();
-        //1.获取所有符合的Student
-        EntityWrapper<Student> wrapper = new EntityWrapper<>();
-        wrapper.orderBy("stu_num",findStudentDTO.getAsc());
-        List<Student> students = this.selectList(wrapper);
-        if (students != null && students.size() > 0){
-//            for (int i=0; i<students.size(); i++){
-            for (Student stu : students) {
-                //根据stu.groupId获取institute,profession,period,whatClass,className
-                GroupVO groupVO = groupService.getGroupDetailById(stu.getGroupId());
-                if (groupVO == null) {
-                    groupVO = new GroupVO();
-                    throw RequestException.fail("数据错误,获取ID为" + stu.getGroupId() + "的分组详情失败");
-                }
-                StudentVO studentVO = new StudentVO();
-                studentVO.setId(stu.getId());
-                studentVO.setRealName(stu.getRealName());
-                studentVO.setStuNum(stu.getStuNum());
-                studentVO.setGroupVO(groupVO);
-                studentVOList.add(studentVO);
-            }
-        }
+        List<StudentVO> studentVOList = this.allList();
         Page<StudentVO> studentPage = new Page<>(findStudentDTO.getPage(),findStudentDTO.getPageSize());
         studentPage.setRecords(studentVOList);
         return studentPage;
+    }
+
+    @Override
+    public List<StudentVO> studentListExAdmin() {
+        List<Student> students = mapper.excludeAparAdmin();
+        if (students == null)   return null;
+        return this.studentToVO(students);
     }
 
     @Override
@@ -196,5 +167,24 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         studentVO.setStuNum(student.getStuNum());
         studentVO.setGroupVO(groupVO);
         return studentVO;
+    }
+
+    private List<StudentVO> studentToVO(List<Student> students){
+        List<StudentVO> studentVOList = new ArrayList<>();
+        for (Student stu : students) {
+            //根据stu.groupId获取institute,profession,period,whatClass,className
+            GroupVO groupVO = groupService.getGroupDetailById(stu.getGroupId());
+            if (groupVO == null) {
+                groupVO = new GroupVO();
+                throw RequestException.fail("数据错误,获取ID为" + stu.getGroupId() + "的分组详情失败");
+            }
+            StudentVO studentVO = new StudentVO();
+            studentVO.setId(stu.getId());
+            studentVO.setRealName(stu.getRealName());
+            studentVO.setStuNum(stu.getStuNum());
+            studentVO.setGroupVO(groupVO);
+            studentVOList.add(studentVO);
+        }
+        return studentVOList;
     }
 }

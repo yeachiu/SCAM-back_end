@@ -1,5 +1,8 @@
 package cn.licoy.wdog.core.controller.app;
 
+import cn.licoy.wdog.common.annotation.SysLogs;
+import cn.licoy.wdog.common.bean.ResponseCode;
+import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.controller.CrudController;
 import cn.licoy.wdog.core.dto.app.student.FindStudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentDTO;
@@ -36,5 +39,12 @@ public class StudentController implements CrudController<StudentVO,StudentDTO,St
     @SysLogs("获取学生列表")
     public ResponseResult allList(){
         return ResponseResult.e(ResponseCode.OK,studentService.allList());
+    }
+
+    @PostMapping(value = {"/listExAdmin"})
+    @ApiOperation(value = "获取学生列表")
+    @SysLogs("获取学生列表")
+    public ResponseResult listExAdmin(){
+        return  ResponseResult.e(ResponseCode.OK,studentService.studentListExAdmin());
     }
 }

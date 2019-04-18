@@ -14,5 +14,5 @@ public class ApartmentDTO {
     @NotBlank(message = "请为部门选择一个管理员")
     private String apartAdmin;	//
 
-    private Object about;	//
+    private String about;	//
 }

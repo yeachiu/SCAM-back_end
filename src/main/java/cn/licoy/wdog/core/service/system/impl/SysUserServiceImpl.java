@@ -16,6 +16,8 @@ import cn.licoy.wdog.core.entity.system.SysRole;
 import cn.licoy.wdog.core.entity.system.SysUser;
 import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
+import cn.licoy.wdog.core.service.app.ApartmentMemberService;
+import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
@@ -44,18 +46,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
 
     @Autowired
     private SysRoleService roleService;
-
     @Autowired
     private SysUserRoleService userRoleService;
-
     @Autowired
     private ShiroService shiroService;
-
     @Autowired
     private SysResourceService resourceService;
-
     @Autowired
     private SysUserAuthService userAuthService;
+    @Autowired
+    private ApartmentMemberService memberService;
 
     @Override
     public SysUser findUserByName(String name,boolean hasResource) {

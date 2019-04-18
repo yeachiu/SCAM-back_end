@@ -9,6 +9,8 @@ import cn.licoy.wdog.core.vo.StudentVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 
 public interface StudentService extends IService<Student> ,
         BaseService<StudentVO,StudentDTO,StudentUpdateDTO,String,FindStudentDTO> {
@@ -17,13 +19,18 @@ public interface StudentService extends IService<Student> ,
      * 学生信息列表（不分页）
      * @return
      */
-    public List<StudentVO> allList();
+    List<StudentVO> allList();
 
     /**
      * 学生信息列表
      * @return
      */
     Page<StudentVO> list(FindStudentDTO dto);
+
+    /**
+     * 排除部门管理员
+     */
+    List<StudentVO> studentListExAdmin();
 
     /**
      * 添加学生信息
@@ -53,4 +60,6 @@ public interface StudentService extends IService<Student> ,
      * 根据ID获取学生信息
      */
     StudentVO getById(String id);
+
+
 }
