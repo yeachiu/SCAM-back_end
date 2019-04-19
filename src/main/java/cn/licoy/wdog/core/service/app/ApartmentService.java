@@ -45,4 +45,3 @@ public interface ApartmentService extends IService<Apartment> {
      */
     ApartmentVO getById(String id);
 }
-
