@@ -1,6 +1,6 @@
 package cn.licoy.wdog.core.vo.app;
 
-import cn.licoy.wdog.core.vo.StudentVO;
+import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,7 +11,7 @@ public class ApartmentMemberVO {
 
     private String id;
 
-    private StudentVO member;
+    private UserAuthVO member;
 
     private List<ActivityAbstractVO> activities;
 
