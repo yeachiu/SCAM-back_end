@@ -1,5 +1,6 @@
 package cn.licoy.wdog.core.service.system;
 
+import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
 import cn.licoy.wdog.core.entity.system.SysUserAuth;
@@ -26,7 +27,16 @@ public interface SysUserAuthService extends IService<SysUserAuth> {
     /**
      * 排除部门管理员
      */
-    List<UserAuthVO> UserAuthListExAdmin();
+    List<UserAuthVO> alreadyListExAdmin();
+
+    /**
+     * 获取用户信息
+     * @param id
+     * @return
+     */
+    UserAuthVO getById(String id);
+
+    /***************************************************************************/
 
     /**
      * 学生身份认证
@@ -52,5 +62,11 @@ public interface SysUserAuthService extends IService<SysUserAuth> {
      * 人工审核列表
      */
     List<SysUserAuth> list();
+
+    /**
+     * 验证用户信息
+     */
+    Boolean exist(String id);
+
 
 }
