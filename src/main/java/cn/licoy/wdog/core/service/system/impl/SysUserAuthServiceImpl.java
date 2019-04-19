@@ -2,6 +2,7 @@ package cn.licoy.wdog.core.service.system.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
 import cn.licoy.wdog.core.entity.app.Student;
@@ -9,7 +10,6 @@ import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.system.SysUserAuthMapper;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import cn.licoy.wdog.core.service.app.StudentService;
-import cn.licoy.wdog.core.service.system.FindUserAuthDTO;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -56,9 +56,19 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     }
 
     @Override
-    public List<UserAuthVO> UserAuthListExAdmin() {
-        return null;
+    public List<UserAuthVO> alreadyListExAdmin() {
+        List<UserAuthVO> userAuthVOList = mapper.alreadyListExAdmin();
+        if (userAuthVOList == null)   return null;
+        return userAuthVOList;
     }
+
+    @Override
+    public UserAuthVO getById(String id) {
+        UserAuthVO userAuthVO = mapper.getById(id);
+        return userAuthVO;
+    }
+
+    /**************************************************************************************************/
 
     @Override
     public Integer selectAuthStatusByUid(String uid) {
@@ -169,4 +179,14 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 //            BeanUtils.copyProperties(userAuth,);
 //        }
 //    }
+
+
+    @Override
+    public Boolean exist(String id) {
+        SysUserAuth userAuth = this.selectById(id);
+        if (userAuth == null)
+            return false;
+
+        return true;
+    }
 }
