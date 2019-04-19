@@ -1,4 +1,4 @@
-package cn.licoy.wdog.core.vo;
+package cn.licoy.wdog.core.vo.app;
 
 import cn.licoy.wdog.core.vo.app.GroupVO;
 import lombok.Data;
