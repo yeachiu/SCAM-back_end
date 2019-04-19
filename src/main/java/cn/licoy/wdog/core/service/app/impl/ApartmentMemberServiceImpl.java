@@ -113,7 +113,24 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
 
     @Override
     public ApartmentMemberVO getById(String id, String uid) {
-        return null;
+        EntityWrapper wrapper = new EntityWrapper();
+        wrapper.eq("apar_id",id).and().eq("uid",uid);
+        ApartmentMember member = this.selectOne(wrapper);
+        if (member == null)
+            throw RequestException.fail(String.format("获取数据失败，不存在ID为%s的成员",uid));
+
+        ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
+        apartmentMemberVO.setCreateTime(member.getCreateTime());
+        //获取成员身份数据
+        StudentVO stu = studentService.getById(member.getUid());
+        if (stu != null)
+            apartmentMemberVO.setMember(stu);
+        //获取成员相关的活动数据
+        List<ActivityAbstractVO> abstractList = activityAdminsService.findActiAbstractByAdminId(member.getUid());
+        if (abstractList != null && abstractList.size()>0){
+            apartmentMemberVO.setActivities(abstractList);
+        }
+        return apartmentMemberVO;
     }
 
     @Override
