@@ -3,7 +3,6 @@ package cn.licoy.wdog.core.service.system.impl;
 import cn.licoy.encryptbody.util.MD5EncryptUtil;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.exception.RequestException;
-import cn.licoy.wdog.common.util.Encrypt;
 import cn.licoy.wdog.common.util.Tools;
 import cn.licoy.wdog.core.config.jwt.JwtToken;
 import cn.licoy.wdog.core.dto.SignInDTO;
@@ -11,13 +10,8 @@ import cn.licoy.wdog.core.dto.system.user.FindUserDTO;
 import cn.licoy.wdog.core.dto.system.user.ResetPasswordDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
-import cn.licoy.wdog.core.entity.system.SysResource;
-import cn.licoy.wdog.core.entity.system.SysRole;
-import cn.licoy.wdog.core.entity.system.SysUser;
-import cn.licoy.wdog.core.entity.system.SysUserRole;
+import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
-import cn.licoy.wdog.core.service.app.ApartmentMemberService;
-import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
@@ -31,11 +25,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -55,7 +44,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
     @Autowired
     private SysUserAuthService userAuthService;
     @Autowired
-    private ApartmentMemberService memberService;
+    private SysUserMapper mapper;
 
     @Override
     public SysUser findUserByName(String name,boolean hasResource) {
@@ -120,6 +109,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         List<SysResource> allPer = userRolesRegexResource(roleService.findAllRoleByUserId(user.getId(),true));
         SysUserVO vo = new SysUserVO();
         BeanUtils.copyProperties(user,vo);
+        vo.setAparId(mapper.getAparIdById(user.getId()));
+        vo.setStuId(mapper.getStuIdById(user.getId()));
         vo.setResources(allPer);
         return vo;
     }
