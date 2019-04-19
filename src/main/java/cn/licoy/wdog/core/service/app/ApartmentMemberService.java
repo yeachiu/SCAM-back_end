@@ -27,6 +27,14 @@ public interface ApartmentMemberService extends IService<ApartmentMember>,
      */
     void addAdmin(String aparId, String uid);
 
+    /**
+     * 更新管理员信息
+     */
+    void updateAdmin(String aparId,String uid);
 
+    /**
+     * 删除部门所有成员信息
+     */
+    void deleteMembersByAparId(String aparId);
 
 }
