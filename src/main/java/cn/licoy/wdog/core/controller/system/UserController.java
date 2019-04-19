@@ -27,32 +27,6 @@ public class UserController {
     @Autowired
     private SysUserService userService;
 
-    @Autowired
-    private SysUserAuthService userAuthService;
-
-    @PostMapping(value = {"/auth/add"})
-    @ApiOperation(value = ("学生认证"))
-    @SysLogs("学生身份认证")
-    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult userAuthForStudent(@RequestBody @Validated @ApiParam(value = "学生认证数据") UserAuthAddDTO authDTO){
-        userAuthService.studentAuth(authDTO);
-        return ResponseResult.e(ResponseCode.OK);
-    }
-
-    @PostMapping(value = {"/auth/review"})
-    @ApiOperation(value = ("人工审核认证"))
-    @SysLogs("人工审核认证")
-    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult manualReview(UserAuthReviewDTO userAuthReviewDTO){
-        userAuthService.manualReview(userAuthReviewDTO);
-        return ResponseResult.e(ResponseCode.OK);
-    }
-    @PostMapping(value = {"/auth/list"})
-    @ApiOperation(value = ("人工审核列表"))
-    @SysLogs("人工审核列表")
-    public ResponseResult reviewList(){
-        return ResponseResult.e(ResponseCode.OK,userAuthService.list());
-    }
 
     @PostMapping(value = {"/list"})
     @ApiOperation(value = "分页获取用户数据")
