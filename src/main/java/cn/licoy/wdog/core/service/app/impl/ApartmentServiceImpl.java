@@ -8,10 +8,12 @@ import cn.licoy.wdog.core.mapper.app.ApartmentMapper;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
 import cn.licoy.wdog.core.service.app.StudentService;
+import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.StudentVO;
 import cn.licoy.wdog.core.vo.app.ApartmentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
+import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -29,7 +31,7 @@ import java.util.List;
 public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment> implements ApartmentService{
 
     @Autowired
-    private StudentService studentService;
+    private SysUserAuthService authService;
     @Autowired
     private SysUserService userService;
     @Autowired
@@ -42,7 +44,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         List<Apartment> apartments = this.selectList(new EntityWrapper<Apartment>().orderBy("create_time",findDTO.getAsc()));
         if (apartments != null && apartments.size()>0){
             for (Apartment apar: apartments ) {
-                StudentVO apartAdmin = studentService.getById(apar.getApartAdmin());
+                UserAuthVO apartAdmin = authService.getById(apar.getApartAdmin());
                 ApartmentVO apartmentVO = new ApartmentVO();
                 BeanUtils.copyProperties(apar,apartmentVO);
                 apartmentVO.setApartAdmin(apartAdmin);
@@ -57,9 +59,9 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
 
     @Override
     public void add(ApartmentDTO dto) {
-        Boolean existStudent = studentService.existStudent(dto.getApartAdmin());
+        Boolean existStudent = authService.exist(dto.getApartAdmin());
         if (!existStudent){
-            throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生",dto.getApartAdmin()));
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",dto.getApartAdmin()));
         }
         Apartment apartment = new Apartment();
         BeanUtils.copyProperties(dto,apartment);
@@ -81,16 +83,19 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         if (apartment == null){
             throw RequestException.fail(String.format("更新失败，不存在ID为%s的部门信息",id));
         }
-        Boolean existStudent = studentService.existStudent(dto.getApartAdmin());
+        Boolean existStudent = authService.exist(dto.getApartAdmin());
         if (!existStudent){
-            throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生",dto.getApartAdmin()));
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",dto.getApartAdmin()));
         }
+
         BeanUtils.copyProperties(dto,apartment);
         apartment.setModifyTime(new Date());
         SysUserVO currentUser = userService.getCurrentUser();
         if (currentUser == null)
             throw RequestException.fail("添加失败because获取用户信息失败");
         apartment.setModifyUser(currentUser.getId());
+        //更新成员信息
+        memberService.updateAdmin(apartment.getId(),dto.getApartAdmin());
         this.updateById(apartment);
     }
 
@@ -99,6 +104,8 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         Apartment apartment = this.selectById(id);
         if(apartment == null)
             throw RequestException.fail(String.format("删除失败，不存在ID为%s的学生信息",id));
+        //删除所有部门成员信息
+        memberService.deleteMembersByAparId(id);
         this.deleteById(id);
     }
 
@@ -117,7 +124,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         if (apartment == null){
             throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门信息",id));
         }
-        StudentVO apartAdmin = studentService.getById(apartment.getApartAdmin());
+        UserAuthVO apartAdmin = authService.getById(apartment.getApartAdmin());
         ApartmentVO apartmentVO = new ApartmentVO();
         BeanUtils.copyProperties(apartment,apartmentVO);
         apartmentVO.setApartAdmin(apartAdmin);
