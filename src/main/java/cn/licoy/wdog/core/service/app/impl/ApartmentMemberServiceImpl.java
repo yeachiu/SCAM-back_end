@@ -70,6 +70,8 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         ApartmentMember member = this.selectById(id);
         if (member == null)
             throw RequestException.fail("删除失败，不存在该关系");
+        if (member.getIsadmin().equals(ConstCode.TRUE))
+            throw RequestException.fail("该成员为部门管理员，不允许删除");
         this.deleteById(id);
 
     }
@@ -93,8 +95,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         List<ApartmentMemberVO> members = new ArrayList<>();
         for (ApartmentMember mem: apartmentMembers) {
             ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
-            apartmentMemberVO.setId(mem.getId());
-            apartmentMemberVO.setCreateTime(mem.getCreateTime());
+            BeanUtils.copyProperties(mem,apartmentMemberVO);
             UserAuthVO userAuthVO = authService.getById(mem.getUid());
             if (userAuthVO != null)
                 apartmentMemberVO.setMember(userAuthVO);
@@ -116,7 +117,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             throw RequestException.fail(String.format("获取数据失败，不存在ID为%s的成员",uid));
 
         ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
-        apartmentMemberVO.setCreateTime(member.getCreateTime());
+        BeanUtils.copyProperties(member,apartmentMemberVO);
         //获取成员身份数据
         UserAuthVO stu = authService.getById(member.getUid());
         if (stu != null)
@@ -176,6 +177,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             this.updateById(oldAdmin);
             this.addAdmin(aparId,uid);
         }
+
     }
 
     @Override
