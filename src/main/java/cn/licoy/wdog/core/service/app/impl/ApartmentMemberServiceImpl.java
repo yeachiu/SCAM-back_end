@@ -166,15 +166,16 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         if (member != null){
             member.setIsadmin(ConstCode.TRUE);
             oldAdmin.setIsadmin(ConstCode.FALSE);
+            List<ApartmentMember> updateList = new ArrayList<>();
+            updateList.add(member);
+            updateList.add(oldAdmin);
+            this.updateBatchById(updateList);
 
         }else{
             oldAdmin.setIsadmin(ConstCode.FALSE);
+            this.updateById(oldAdmin);
             this.addAdmin(aparId,uid);
         }
-        List<ApartmentMember> updateList = new ArrayList<>();
-        updateList.add(member);
-        updateList.add(oldAdmin);
-        this.updateBatchById(updateList);
     }
 
     @Override
