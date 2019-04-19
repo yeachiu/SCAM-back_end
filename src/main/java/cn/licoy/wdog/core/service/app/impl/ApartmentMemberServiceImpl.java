@@ -10,11 +10,13 @@ import cn.licoy.wdog.core.service.app.ActivityAdminsService;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
 import cn.licoy.wdog.core.service.app.StudentService;
+import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.StudentVO;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
+import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -32,7 +34,7 @@ import java.util.List;
 public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMapper,ApartmentMember> implements ApartmentMemberService{
 
     @Autowired
-    private StudentService studentService;
+    private SysUserAuthService authService;
     @Autowired
     private ApartmentService apartmentService;
     @Autowired
@@ -43,7 +45,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
 
     @Override
     public void add(ApartmentMemberDTO addDTO) {
-        Boolean bool = studentService.existStudent(addDTO.getUid());
+        Boolean bool = authService.exist(addDTO.getUid());
         if (!bool){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生信息",addDTO.getUid()));
         }
@@ -73,9 +75,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
     }
 
     @Override
-    public void update(String id, ApartmentMemberDTO updateDTO) {
-
-    }
+    public void update(String id, ApartmentMemberDTO updateDTO) { }
 
     @Override
     public Page<ApartmentMemberVO> list(FindMemberDTO findDTO) {
@@ -90,25 +90,21 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         EntityWrapper wrapper = new EntityWrapper();
         wrapper.eq("apar_id",id);
         List<ApartmentMember> apartmentMembers = this.selectList(wrapper);
-
         List<ApartmentMemberVO> members = new ArrayList<>();
-
         for (ApartmentMember mem: apartmentMembers) {
             ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
             apartmentMemberVO.setId(mem.getId());
             apartmentMemberVO.setCreateTime(mem.getCreateTime());
-            StudentVO stu = studentService.getById(mem.getUid());
-            if (stu != null)
-                apartmentMemberVO.setMember(stu);
+            UserAuthVO userAuthVO = authService.getById(mem.getUid());
+            if (userAuthVO != null)
+                apartmentMemberVO.setMember(userAuthVO);
             List<ActivityAbstractVO> abstractList = activityAdminsService.findActiAbstractByAdminId(mem.getUid());
             if (abstractList != null && abstractList.size()>0){
                 apartmentMemberVO.setActivities(abstractList);
             }
             members.add(apartmentMemberVO);
         }
-
         return members;
-
     }
 
     @Override
@@ -122,7 +118,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
         apartmentMemberVO.setCreateTime(member.getCreateTime());
         //获取成员身份数据
-        StudentVO stu = studentService.getById(member.getUid());
+        UserAuthVO stu = authService.getById(member.getUid());
         if (stu != null)
             apartmentMemberVO.setMember(stu);
         //获取成员相关的活动数据
@@ -135,14 +131,10 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
 
     @Override
     public void addAdmin(String aparId, String uid) {
-        Boolean bool = studentService.existStudent(uid);
+        Boolean bool = authService.exist(uid);
         if (!bool){
-            throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生信息",uid));
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",uid));
         }
-//        bool = apartmentService.existApartment(aparId);
-//        if (!bool){
-//            throw RequestException.fail(String.format("数据错误，不存在ID为%s的部门信息",aparId));
-//        }
         ApartmentMember member = new ApartmentMember();
         member.setAparId(aparId);
         member.setUid(uid);
@@ -154,6 +146,44 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         member.setCreateTime(new Date());
         member.setCreateUser(currentUser.getId());
         this.insert(member);
+    }
+
+    @Override
+    public void updateAdmin(String aparId, String uid) {
+        Boolean bool = authService.exist(uid);
+        if (!bool){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",uid));
+        }
+        ApartmentMember oldAdmin = this.selectOne(new EntityWrapper<ApartmentMember>().
+                eq("apar_id",aparId).and().eq("isadmin",ConstCode.TRUE));
+        if (oldAdmin == null){
+            throw  RequestException.fail(String.format("数据错误，找不到ID为%s的部门中ID为%s的管理员信息",aparId,uid));
+        }
+        //1.新管理员为原部门成员 ==> 调换二者的isadmin状态
+        //2.新管理员为新成员 ==> 原管理员更改isadmin状态，添加新管理员
+        ApartmentMember member = this.selectOne(new EntityWrapper<ApartmentMember>().
+                eq("apar_id",aparId).and().eq("uid",uid));
+        if (member != null){
+            member.setIsadmin(ConstCode.TRUE);
+            oldAdmin.setIsadmin(ConstCode.FALSE);
+
+        }else{
+            oldAdmin.setIsadmin(ConstCode.FALSE);
+            this.addAdmin(aparId,uid);
+        }
+        List<ApartmentMember> updateList = new ArrayList<>();
+        updateList.add(member);
+        updateList.add(oldAdmin);
+        this.updateBatchById(updateList);
+    }
+
+    @Override
+    public void deleteMembersByAparId(String aparId) {
+        Boolean bool = apartmentService.existApartment(aparId);
+        if (!bool){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的部门信息",aparId));
+        }
+        this.delete(new EntityWrapper<ApartmentMember>().eq("apar_id",aparId));
     }
 }
 
