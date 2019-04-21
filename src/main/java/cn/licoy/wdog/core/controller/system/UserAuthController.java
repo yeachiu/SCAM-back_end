@@ -3,8 +3,10 @@ package cn.licoy.wdog.core.controller.system;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
+import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
+import cn.licoy.wdog.core.service.system.FindUserAuthDTO;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,10 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -30,8 +29,17 @@ public class UserAuthController {
     @ApiOperation(value = ("学生认证"))
     @SysLogs("学生身份认证")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult userAuthForStudent(@RequestBody @Validated @ApiParam(value = "学生认证数据") UserAuthAddDTO authDTO){
+    public ResponseResult add(@RequestBody @Validated @ApiParam(value = "学生认证数据") UserAuthAddDTO authDTO){
         userAuthService.studentAuth(authDTO);
+        return ResponseResult.e(ResponseCode.OK);
+    }
+
+    @PostMapping(value = {"/addByAdmin"})
+    @ApiOperation(value = ("学生认证"))
+    @SysLogs("学生身份认证")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult addByAdmin(@RequestBody @Validated @ApiParam(value = "学生认证数据") UserAuthAddByAdminDTO authDTO){
+        userAuthService.addByAdmin(authDTO);
         return ResponseResult.e(ResponseCode.OK);
     }
 
@@ -45,10 +53,10 @@ public class UserAuthController {
     }
 
     @PostMapping(value = {"/list"})
-    @ApiOperation(value = ("人工审核列表"))
-    @SysLogs("人工审核列表")
-    public ResponseResult reviewList(){
-        return ResponseResult.e(ResponseCode.OK,userAuthService.list());
+    @ApiOperation(value = ("列表"))
+    @SysLogs("列表")
+    public ResponseResult reviewList(@RequestBody FindUserAuthDTO dto){
+        return ResponseResult.e(ResponseCode.OK,userAuthService.list(dto));
     }
 
     @PostMapping(value = {"/list/already"})
@@ -63,5 +71,20 @@ public class UserAuthController {
     @SysLogs("人工审核列表")
     public ResponseResult alreadyListExAdmin(){
         return ResponseResult.e(ResponseCode.OK,userAuthService.alreadyListExAdmin());
+    }
+
+    @PostMapping(value = {"/list/already/exmember"})
+    @ApiOperation(value = ("列表"))
+    @SysLogs("列表")
+    public ResponseResult alreadyListExMember(){
+        return ResponseResult.e(ResponseCode.OK,userAuthService.alreadyListExMember());
+    }
+
+
+    @PostMapping(value = {"/remove/{id}"})
+    @ApiOperation(value = ("删除记录"))
+    public ResponseResult remove(@PathVariable("id") String id){
+        userAuthService.remove(id);
+        return ResponseResult.e(ResponseCode.OK);
     }
 }

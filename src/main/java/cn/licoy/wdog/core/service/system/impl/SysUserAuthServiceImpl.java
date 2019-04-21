@@ -2,12 +2,18 @@ package cn.licoy.wdog.core.service.system.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
-import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
+import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
 import cn.licoy.wdog.core.entity.app.Student;
+import cn.licoy.wdog.core.entity.system.SysDictionary;
 import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.system.SysUserAuthMapper;
+import cn.licoy.wdog.core.service.system.FindUserAuthDTO;
+import cn.licoy.wdog.core.service.system.SysDictionaryService;
+import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.app.StudentVO;
+import cn.licoy.wdog.core.vo.system.SysUserVO;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
@@ -19,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -30,14 +33,26 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 
 
     @Autowired
-    StudentService studentService;
+    private StudentService studentService;
     @Autowired
-    SysUserAuthMapper mapper;
+    private SysDictionaryService dictionaryService;
+    @Autowired
+    private SysUserService userService;
+    @Autowired
+    private SysUserAuthMapper mapper;
 
     @Override
-    public List<SysUserAuth> list() {
-        return this.selectList(new EntityWrapper<SysUserAuth>()
-                .eq("status",ConstCode.USER_AUTH_INAUTH));
+    public Page<UserAuthVO> inauthList(FindUserAuthDTO dto) {
+        Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
+        userAuthVOPage.setRecords(mapper.inauthList());
+        return userAuthVOPage;
+    }
+
+    @Override
+    public Page<UserAuthVO> list(FindUserAuthDTO dto) {
+        Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
+        userAuthVOPage.setRecords(mapper.list());
+        return userAuthVOPage;
     }
 
     @Override
@@ -63,6 +78,13 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     }
 
     @Override
+    public List<UserAuthVO> alreadyListExMember() {
+        List<UserAuthVO> userAuthVOList = mapper.alreadyListExMember();
+        if (userAuthVOList == null)   return null;
+        return userAuthVOList;
+    }
+
+    @Override
     public UserAuthVO getById(String id) {
         UserAuthVO userAuthVO = mapper.getById(id);
         return userAuthVO;
@@ -74,8 +96,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     public Integer selectAuthStatusByUid(String uid) {
 
         List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
-                .eq("uid",uid)
-                .notIn("status",ConstCode.USER_AUTH_DELETE));
+                .eq("uid",uid));
         if (userAuths.isEmpty() || userAuths.size() > 0){
             return ConstCode.USER_AUTH_UNAUTH;
         }
@@ -89,8 +110,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
             throw RequestException.fail("不存在该认证信息");
         }
         if (userAuth.getStatus().equals(ConstCode.USER_AUTH_INAUTH)){
-            userAuth.setStatus(ConstCode.USER_AUTH_DELETE);
-            this.updateById(userAuth);
+           this.deleteById(authId);
         }else{
             throw RequestException.fail("操作失败");
         }
@@ -121,7 +141,6 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         // 是否已认证过：数据还未同步；
         List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
                 .eq("uid",authdto.getUid())
-                .notIn("status",ConstCode.USER_AUTH_DELETE)
         );
 
         if (!userAuths.isEmpty() && userAuths.size() > 0){
@@ -188,5 +207,58 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
             return false;
 
         return true;
+    }
+
+    @Override
+    public void remove(String id) {
+        SysUserAuth userAuth = this.selectById(id);
+        if (userAuth == null){
+            throw RequestException.fail(String.format("删除失败，不存在ID为%s的认证记录"));
+        }
+        this.deleteById(id);
+    }
+
+    @Override
+    public void add(UserAuthAddDTO addDTO) {
+        SysDictionary dictionary = dictionaryService.selectById(addDTO.getDictId());
+        if (dictionary == null){
+            throw RequestException.fail(String.format("添加失败，不存在ID为%s的专业数据",addDTO.getDictId()));
+        }
+        SysUserAuth userAuth = new SysUserAuth();
+        BeanUtils.copyProperties(addDTO,userAuth);
+        //时间和操作者
+        SysUserVO currentUser = userService.getCurrentUser();
+        if (currentUser == null)
+            throw RequestException.fail("添加失败because获取用户信息失败");
+        userAuth.setCreateTime(new Date());
+        userAuth.setCreateUser(currentUser.getId());
+        this.insert(userAuth);
+    }
+
+    @Override
+    public void addByAdmin(UserAuthAddByAdminDTO addDTO) {
+        Boolean bool = userService.isExist(addDTO.getUid());
+        if(!bool)
+            throw RequestException.fail("不存在该用户");
+        bool = studentService.existStudent(addDTO.getStuId());
+        if(!bool)
+            throw RequestException.fail("不存在该学生信息");
+        StudentVO studentVO = studentService.getById(addDTO.getStuId());
+        SysUserAuth userAuth = new SysUserAuth();
+        userAuth.setStatus(ConstCode.USER_AUTH_ALREADY);
+        userAuth.setDictId(studentVO.getGroupVO().getDictId());
+        userAuth.setPeriod(studentVO.getGroupVO().getPeriod());
+        userAuth.setRealName(studentVO.getRealName());
+        userAuth.setStuId(studentVO.getId());
+        userAuth.setStuNum(studentVO.getStuNum());
+        userAuth.setWhatClass(studentVO.getGroupVO().getWhatClass());
+        userAuth.setUid(addDTO.getUid());
+        //时间和操作者
+        SysUserVO currentUser = userService.getCurrentUser();
+        if (currentUser == null)
+            throw RequestException.fail("添加失败because获取用户信息失败");
+        userAuth.setCreateTime(new Date());
+        userAuth.setCreateUser(currentUser.getId());
+        this.insert(userAuth);
     }
 }

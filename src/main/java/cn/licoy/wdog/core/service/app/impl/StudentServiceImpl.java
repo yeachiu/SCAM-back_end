@@ -12,8 +12,8 @@ import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.system.SysUserService;
-import cn.licoy.wdog.core.vo.StudentVO;
 import cn.licoy.wdog.core.vo.app.GroupVO;
+import cn.licoy.wdog.core.vo.app.StudentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -47,6 +47,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         List<Student> students = this.selectList(new EntityWrapper<Student>());
         if (students == null)   return null;
         return this.studentToVO(students);
+    }
+
+    @Override
+    public List<StudentVO> unauthList() {
+        List<Student> list = this.mapper.unauthList();
+        if (list == null)
+            return null;
+        return this.studentToVO(list);
     }
 
     @Override

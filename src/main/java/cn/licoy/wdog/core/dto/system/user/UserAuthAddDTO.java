@@ -18,11 +18,11 @@ public class UserAuthAddDTO {
     private String stuNum;
 
     @NotBlank(message = "年级不能为空")
-    private Integer grade;
+    private Integer period;
 
     @NotBlank(message = "班级不能为空")
-    private Integer stuClass;
+    private Integer whatClass;
 
     @NotBlank(message = "专业不能为空")
-    private String profession;
+    private String dictId;
 }

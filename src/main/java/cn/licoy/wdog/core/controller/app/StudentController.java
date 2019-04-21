@@ -9,7 +9,7 @@ import cn.licoy.wdog.core.dto.app.student.StudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentUpdateDTO;
 import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.service.app.StudentService;
-import cn.licoy.wdog.core.vo.StudentVO;
+import cn.licoy.wdog.core.vo.app.StudentVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +46,12 @@ public class StudentController implements CrudController<StudentVO,StudentDTO,St
     @SysLogs("获取学生列表")
     public ResponseResult listExAdmin(){
         return  ResponseResult.e(ResponseCode.OK,studentService.studentListExAdmin());
+    }
+
+    @PostMapping(value = {"/list/unauth"})
+    @ApiOperation(value = "获取学生列表")
+    @SysLogs("获取学生列表")
+    public ResponseResult unauthList(){
+        return  ResponseResult.e(ResponseCode.OK,studentService.unauthList());
     }
 }

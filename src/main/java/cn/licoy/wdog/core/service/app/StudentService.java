@@ -5,7 +5,7 @@ import cn.licoy.wdog.core.dto.app.student.FindStudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentUpdateDTO;
 import cn.licoy.wdog.core.entity.app.Student;
-import cn.licoy.wdog.core.vo.StudentVO;
+import cn.licoy.wdog.core.vo.app.StudentVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -21,6 +21,7 @@ public interface StudentService extends IService<Student> ,
      */
     List<StudentVO> allList();
 
+    List<StudentVO> unauthList();
     /**
      * 学生信息列表
      * @return

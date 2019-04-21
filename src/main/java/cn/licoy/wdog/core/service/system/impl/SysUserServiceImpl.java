@@ -14,6 +14,7 @@ import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
+import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -302,5 +303,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         }catch (Exception e){
             throw RequestException.fail(String.format("ID为 %s 的用户密码重置失败",resetPasswordDTO.getUid()),e);
         }
+    }
+
+    @Override
+    public Boolean isExist(String id) {
+        SysUser user = this.selectById(id);
+        if (user == null)
+            return false;
+        return true;
+    }
+
+    @Override
+    public List<NameAndIdVO> unauthList() {
+        List<NameAndIdVO> list = this.mapper.unauthList();
+        if (list == null)
+            return null;
+        return list;
     }
 }

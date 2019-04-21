@@ -16,10 +16,10 @@ import java.util.List;
 public class SysUserAuth implements Serializable {
 
 
-	@TableId
-	private String id;
+    @TableId
+    private String id;
 
-	private String uid;	//
+    private String uid;	//
 	
 	private String stuId;	//
 	
@@ -35,13 +35,13 @@ public class SysUserAuth implements Serializable {
 	
 	private Integer status;	//认证状态(0 = 认证中; 1 = 已认证; 2 = 不通过; -1 = 已删除)
 
-	private Date createTime;
+    private Date createTime;
 
-	private String createUser;
+    private String createUser;
 
-	private Date modifyTime;
+    private Date modifyTime;
 
-	private String modifyUser;
+    private String modifyUser;
 
 	private static final long serialVersionUID = 1L;
 

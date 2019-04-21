@@ -27,6 +27,13 @@ public class UserController {
     @Autowired
     private SysUserService userService;
 
+    @PostMapping(value = {"/list/unauth"})
+    @ApiOperation(value = "获取用户数据")
+    @SysLogs("获取用户数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult unauthList(){
+        return ResponseResult.e(ResponseCode.OK,userService.unauthList());
+    }
 
     @PostMapping(value = {"/list"})
     @ApiOperation(value = "分页获取用户数据")
@@ -97,5 +104,7 @@ public class UserController {
         userService.resetPassword(dto);
         return ResponseResult.e(ResponseCode.OK);
     }
+
+
 
 }

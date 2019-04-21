@@ -11,6 +11,7 @@ import cn.licoy.wdog.core.mapper.app.AGroupMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.app.GroupSelectVO;
 import cn.licoy.wdog.core.vo.app.GroupVO;
 import cn.licoy.wdog.core.vo.system.DictionaryVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
@@ -34,6 +35,8 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
     private SysDictionaryService dictionaryService;
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private AGroupMapper mapper;
     /**
      * 分组列表
      * @return
@@ -70,6 +73,33 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
         return groupVOs;
     }
 
+    @Override
+    public List<GroupSelectVO> listToSelect() {
+        //1.学院组
+        List<GroupSelectVO> institutes = this.mapper.listByRoot();
+        if (institutes != null && institutes.size() > 0){
+            for (GroupSelectVO vo : institutes) {
+                this.findAllChildren(vo);
+            }
+        }
+        //2.年级组
+        List<GroupSelectVO> periods = this.mapper.listByPeriod();
+        institutes.addAll(periods);
+        return institutes;
+    }
+
+    @Override
+    public List<GroupSelectVO> findAllChildren(GroupSelectVO dad) {
+        List<GroupSelectVO> children = this.mapper.findChildren(dad.getId());
+        if (children != null && children.size() > 0){
+            dad.setChildren(children);
+            for (GroupSelectVO vo : children) {
+                this.findAllChildren(vo);
+            }
+        }
+        return null;
+    }
+
     /**
      * 根据DTO数据构建分组数据
      * 1.判断dictId,dictid-period单独的分组是否已存在，不存在则新增;
@@ -78,6 +108,9 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
      */
     @Override
     public void add(AGroupDTO dto) {
+        SysUserVO currentUser = userService.getCurrentUser();
+        if (currentUser == null)
+            throw RequestException.fail("添加失败because获取用户信息失败");
         List<AGroup> addAGroups = new ArrayList<>();
         AGroup result = new AGroup();
 
@@ -91,7 +124,11 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
             institute.setName(dictName);
             institute.setDictId(dto.getDictId());
             institute.setTypeSymbol(ConstCode.SYMBOL_USER);
-            addAGroups.add(institute);
+            institute.setCreateTime(new Date());
+            institute.setCreateUser(currentUser.getId());
+            institute.setParentId("ROOT");
+//            addAGroups.add(institute);
+            this.insert(institute);
         }
         /** 是否存在年级分组*/
         AGroup period = this.selectOne(new EntityWrapper<AGroup>()
@@ -103,7 +140,11 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
             period.setName(dto.getPeriod() + ConstCode.PERIOD_NAME);
             period.setPeriod(dto.getPeriod());
             period.setTypeSymbol(ConstCode.SYMBOL_USER);
-            addAGroups.add(period);
+            period.setCreateUser(currentUser.getId());
+            period.setCreateTime(new Date());
+            period.setParentId("PERIOD");
+//            addAGroups.add(period);
+            this.insert(period);
         }
         /** 是否存在年级-学院专业分组*/
         AGroup institute_period = this.selectOne(new EntityWrapper<AGroup>()
@@ -117,7 +158,11 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
             institute_period.setDictId(dto.getDictId());
             institute_period.setPeriod(dto.getPeriod());
             institute_period.setTypeSymbol(ConstCode.SYMBOL_USER);
-            addAGroups.add(institute_period);
+            institute_period.setParentId(institute.getId());
+            institute_period.setCreateTime(new Date());
+            institute_period.setCreateUser(currentUser.getId());
+            this.insert(institute_period);
+//            addAGroups.add(institute_period);
         }
         /** 班级分组 */
         for (int i=0; i<dto.getClassNum(); i++){
@@ -131,19 +176,18 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
                 add.setTypeSymbol(ConstCode.SYMBOL_USER);
                 add.setName(dto.getPeriod() + ConstCode.PERIOD_NAME + dictName + (i+1) + ConstCode.CLASS_NAME);
                 add.setWhatClass(i + 1);
+                add.setParentId(institute_period.getId());
                 addAGroups.add(add);
             }
         }
-        //设置共同信息
-        SysUserVO currentUser = userService.getCurrentUser();
-        if (currentUser == null)
-            throw RequestException.fail("添加失败because获取用户信息失败");
+
         for (int i = 0; i < addAGroups.size(); i++) {
             result = addAGroups.get(i);
             result.setCreateTime(new Date());
             result.setCreateUser(currentUser.getId());
         }
-        this.insertBatch(addAGroups);
+        if (addAGroups != null && addAGroups.size()>0)
+            this.insertBatch(addAGroups);
 
     }
 

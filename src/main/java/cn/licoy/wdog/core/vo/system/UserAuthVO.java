@@ -27,4 +27,6 @@ public class UserAuthVO {
     /***************************************************/
 
     private String className;
+
+    private String profession;
 }

@@ -28,6 +28,8 @@ public class AGroup extends Schema implements Serializable {
 	private Integer whatClass;	//
 	
 	private String apartmentId;	//部门ID
+
+	private String parentId;
 	
 	private static final long serialVersionUID = 1L;
 

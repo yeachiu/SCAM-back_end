@@ -29,6 +29,13 @@ public class GroupController {
         return ResponseResult.e(ResponseCode.OK,groupService.list());
     }
 
+    @PostMapping(value = {"/list/format"})
+    @ApiOperation(value = "获取部门分组列表")
+    @SysLogs("获取所有的分组列表")
+    public ResponseResult listToSelect(){
+        return ResponseResult.e(ResponseCode.OK,groupService.listToSelect());
+    }
+
     @PostMapping(value = {"/add"})
     @ApiOperation(value = "添加分组")
     @SysLogs("添加分组")

@@ -58,6 +58,8 @@ public class ActivityAddDTO {
 
     private Integer status;  //活动状态
 
+    private String organizerId;	//主办方
+
     private String otherAdmin;     //  其他管理员   ==>     t_activityAdmins {id,activityId,userId}
 
     private String groupId;	//分组限制  ==>   t_groupLimit {id,actiId,groupId}

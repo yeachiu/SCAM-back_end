@@ -8,7 +8,7 @@ public class ConstCode {
     public static final Integer USER_AUTH_INAUTH = 1;   //认证中
     public static final Integer USER_AUTH_ALREADY = 2;  //已认证
     public static final Integer USER_AUTH_FAIL = 3; //认证不通过
-    public static final Integer USER_AUTH_DELETE = -1;  //撤回、删除
+//    public static final Integer USER_AUTH_DELETE = -1;  //撤回、删除
 
 
     /** 活动状态 **/

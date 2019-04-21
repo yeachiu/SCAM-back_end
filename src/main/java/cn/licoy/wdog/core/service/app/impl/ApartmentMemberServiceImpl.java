@@ -12,7 +12,6 @@ import cn.licoy.wdog.core.service.app.ApartmentService;
 import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
-import cn.licoy.wdog.core.vo.StudentVO;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;

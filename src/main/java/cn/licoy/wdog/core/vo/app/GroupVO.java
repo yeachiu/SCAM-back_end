@@ -19,4 +19,5 @@ public class GroupVO {
     private String institute;   //学院名称
 
     private String profession;   //专业名称
+
 }

@@ -1,11 +1,14 @@
 package cn.licoy.wdog.core.mapper.system;
 
 import cn.licoy.wdog.core.entity.system.SysUser;
+import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Mapper
 @Repository
@@ -18,5 +21,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     @Select("SELECT a.stu_id FROM sys_user u, sys_user_auth a " +
             "WHERE u.id = a.uid AND a.uid = #{id}")
     String getStuIdById(String id);
+
+    @Select("SELECT s.id, s.username FROM sys_user s WHERE s.id NOT IN "+
+            "(SELECT uid FROM sys_user_auth)")
+    List<NameAndIdVO> unauthList();
 
 }
