@@ -35,7 +35,7 @@ public class ActivityVO {
 
     /** 活动限制 **/
 
-    private List<SimpleGroupVO> grouplimit;	//分组限制
+    private List<SimpleAGroupVO> grouplimit;	//分组限制
 
     private Integer limitQuota;	//活动名额 默认不限
 

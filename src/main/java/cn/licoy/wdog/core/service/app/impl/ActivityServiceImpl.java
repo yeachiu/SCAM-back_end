@@ -5,21 +5,17 @@ import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.*;
 import cn.licoy.wdog.core.entity.system.*;
-import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.app.ActivityMapper;
 import cn.licoy.wdog.core.service.app.*;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
-import cn.licoy.wdog.core.vo.app.SimpleGroupVO;
-import cn.licoy.wdog.core.vo.system.SimpleUserAuthVO;
+import cn.licoy.wdog.core.vo.app.SimpleAGroupVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -40,8 +36,6 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     @Autowired
     private SysUserService userService;
     @Autowired
-    private SysUserAuthService userAuthService;
-    @Autowired
     private ActivityAdminsService adminsService;
     @Autowired
     private AGroupService groupService;
@@ -54,8 +48,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     @Autowired
     private ApartmentService apartmentService;
     @Autowired
-    private ActivityMemberService activityMemberService;
-
+    private ActivityMemberService memberService;
     @Autowired
     private ActivityMapper mapper;
 
@@ -73,7 +66,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
         for(ActivityVO acti : activities){
             //获取分组限制
-            List<SimpleGroupVO> limitList = limitService.findLimitByActiId(findDTO.getId());
+            List<SimpleAGroupVO> limitList = limitService.findLimitByActiId(findDTO.getId());
             if (limitList != null && limitList.size()>0){
                 acti.setGrouplimit(limitList);
             }
@@ -83,7 +76,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
                 acti.setOtherAdmin(adminList);
             }
             //获取当前报名人数
-            acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+            acti.setMemberNow(memberService.getSignupNumByActiId(acti.getId()));
 
         }
         Page<ActivityVO> activitiesPage = new Page<>(findDTO.getPage(),findDTO.getPageSize());

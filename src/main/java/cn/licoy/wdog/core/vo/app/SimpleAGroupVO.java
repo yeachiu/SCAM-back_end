@@ -2,9 +2,8 @@ package cn.licoy.wdog.core.vo.app;
 
 import lombok.Data;
 
-
 @Data
-public class SimpleGroupVO {
+public class SimpleAGroupVO {
 
     private String id;
 

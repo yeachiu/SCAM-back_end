@@ -17,4 +17,7 @@ public interface ApartmentMemberMapper extends BaseMapper<ApartmentMember>  {
     List<MemberVO> listExcludeAdmin(String aparId);
 
 
+
+
+
 }

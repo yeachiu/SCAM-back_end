@@ -10,5 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,ActivityMember> implements ActivityMemberService{
-	
+
+    @Override
+    public Integer getSignupNumByActiId(String actiId) {
+        return null;
+    }
 }

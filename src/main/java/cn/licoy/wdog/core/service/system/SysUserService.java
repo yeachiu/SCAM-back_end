@@ -8,7 +8,7 @@ import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.SysResource;
 import cn.licoy.wdog.core.entity.system.SysRole;
 import cn.licoy.wdog.core.entity.system.SysUser;
-import cn.licoy.wdog.core.mapper.system.NameAndIdVO;
+import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.plugins.Page;
