@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class MemberVO {
 
-    private String id;
+    private String id;  //sys_user.id
 
     private String realName;
 }
