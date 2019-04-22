@@ -12,11 +12,11 @@ public class ConstCode {
 
 
     /** 活动状态 **/
-    public static final Integer ACT_STATUS_DRAFT = 0;   //草稿
-    public static final Integer ACT_STATUS_PUBLISH = 1 ;   //已发布
-    public static final Integer ACT_STATUS_PROCESS = 2 ;   //进行中
-    public static final Integer ACT_STATUS_COMPLETE = 3;   //已结束
-    public static final Integer ACT_STATUS_CANCEL = -1 ;   //已取消
+    public static final Integer ACT_STATUS_DRAFT = 1;   //草稿
+    public static final Integer ACT_STATUS_PUBLISH = 2 ;   //已发布
+    public static final Integer ACT_STATUS_PROCESS = 3 ;   //进行中
+    public static final Integer ACT_STATUS_COMPLETE = 4;   //已结束
+    public static final Integer ACT_STATUS_CANCEL = 0 ;   //已取消
 
     /** 分组标识 **/
     public static final Integer SYMBOL_USER = 0;    //用户分组
