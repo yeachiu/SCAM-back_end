@@ -54,6 +54,9 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     @Autowired
     private ApartmentService apartmentService;
     @Autowired
+    private ActivityMemberService activityMemberService;
+
+    @Autowired
     private ActivityMapper mapper;
 
     /**
@@ -69,14 +72,19 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
         List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
         for(ActivityVO acti : activities){
+            //获取分组限制
             List<SimpleGroupVO> limitList = limitService.findLimitByActiId(findDTO.getId());
             if (limitList != null && limitList.size()>0){
                 acti.setGrouplimit(limitList);
             }
+            //获取管理员
             List<SimpleUserVO> adminList = userService.findAllSimpleVOByActiId(findDTO.getId());
             if (adminList != null && adminList.size() > 0){
                 acti.setOtherAdmin(adminList);
             }
+            //获取当前报名人数
+            acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+
         }
         Page<ActivityVO> activitiesPage = new Page<>(findDTO.getPage(),findDTO.getPageSize());
         activitiesPage.setRecords(activities);
