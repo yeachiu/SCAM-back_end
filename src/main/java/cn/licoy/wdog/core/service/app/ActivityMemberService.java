@@ -5,4 +5,6 @@ import com.baomidou.mybatisplus.service.IService;
 
 public interface ActivityMemberService extends IService<ActivityMember> {
 	
+	Integer getSignupNumByActiId (String actiId);
+	
 }
