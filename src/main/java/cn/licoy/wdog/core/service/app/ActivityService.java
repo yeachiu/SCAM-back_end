@@ -10,15 +10,17 @@ import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 public interface ActivityService extends IService<Activity> {
 
     /**
      * 某部门活动列表
      */
-    List<ActivityVO> getAllActivityByAparId(String aparId);
-    
+    Page<ActivityVO> getAllActivityByAparId(FindActivityDTO findDTO);
+
     /**
-     * 获取所有用户（分页）
+     * 活动列表(分页)
      * @param findActivityDTO 过滤条件
      */
     Page<ActivityVO> getAllActivityBySplitPage(FindActivityDTO findActivityDTO);
