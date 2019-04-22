@@ -5,6 +5,7 @@ import cn.licoy.wdog.core.dto.app.apartment.ApartmentMemberDTO;
 import cn.licoy.wdog.core.dto.app.apartment.FindMemberDTO;
 import cn.licoy.wdog.core.entity.app.ApartmentMember;
 import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
+import cn.licoy.wdog.core.vo.app.MemberVO;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
@@ -36,5 +37,10 @@ public interface ApartmentMemberService extends IService<ApartmentMember>,
      * 删除部门所有成员信息
      */
     void deleteMembersByAparId(String aparId);
+
+    /**
+     * 其他管理员列表
+     */
+    List<MemberVO> listExcludeAdmin(String aparId);
 
 }
