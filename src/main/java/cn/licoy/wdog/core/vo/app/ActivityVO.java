@@ -1,11 +1,15 @@
 package cn.licoy.wdog.core.vo.app;
 
+import cn.licoy.wdog.core.vo.system.SimpleUserAuthVO;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ActivityVO {
+
+    /** 基本信息 **/
 
     private String id;
 
@@ -23,21 +27,25 @@ public class ActivityVO {
 
     private Date endTime;	//
 
-    private String url;	//
-
     private Integer status;	//状态
 
-    private String organizerId;	//主办方
+    private Date createTime;
 
-    private String groupId;	//分组限制
+    private String createUserId;
+
+    private String createUserRealname;
+
+    /** 活动限制 **/
+
+    private List<SimpleGroupVO> grouplimit;	//分组限制
 
     private Integer limitQuota;	//活动名额 默认不限
 
-    private Integer isblackList;	//是否黑名单限制(0=true;1=false)
-
     private Integer isreview;	//是否人工审核(0=true;1=false)
+    
+    /**  其他管理员 **/
+    
+    private List<SimpleUserAuthVO> otherAdmin;
 
-    private String associationId;
 
-    private Date createTime;
 }
