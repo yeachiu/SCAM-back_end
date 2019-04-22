@@ -1,6 +1,6 @@
 package cn.licoy.wdog.core.vo.app;
 
-import cn.licoy.wdog.core.vo.system.SimpleUserAuthVO;
+import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import lombok.Data;
 
 import java.util.Date;
@@ -31,9 +31,7 @@ public class ActivityVO {
 
     private Date createTime;
 
-    private String createUserId;
-
-    private String createUserRealname;
+    private String createUser;
 
     /** 活动限制 **/
 
@@ -42,10 +40,10 @@ public class ActivityVO {
     private Integer limitQuota;	//活动名额 默认不限
 
     private Integer isreview;	//是否人工审核(0=true;1=false)
-    
-    /**  其他管理员 **/
-    
-    private List<SimpleUserAuthVO> otherAdmin;
+
+    /**  管理员 **/
+
+    private List<SimpleUserVO> otherAdmin;
 
 
 }
