@@ -11,10 +11,11 @@ import cn.licoy.wdog.core.dto.system.user.ResetPasswordDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.*;
+import cn.licoy.wdog.core.mapper.system.NameAndIdVO;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
-import cn.licoy.wdog.core.vo.system.NameAndIdVO;
+import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -46,6 +47,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
     private SysUserAuthService userAuthService;
     @Autowired
     private SysUserMapper mapper;
+
+    @Override
+    public SimpleUserVO findSimpleVOById(String id) {
+        return this.mapper.findSimpleVOById(id);
+    }
+
+    @Override
+    public List<SimpleUserVO> findAllSimpleVOByActiId(String actiId) {
+        return this.mapper.findAllSimpleVOByActiId(actiId);
+    }
 
     @Override
     public SysUser findUserByName(String name,boolean hasResource) {
