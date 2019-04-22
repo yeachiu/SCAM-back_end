@@ -13,8 +13,10 @@ import com.baomidou.mybatisplus.service.IService;
 public interface ActivityService extends IService<Activity> {
 
     /**
-     * 活动列表
+     * 某部门活动列表
      */
+    List<ActivityVO> getAllActivityByAparId(String aparId);
+    
     /**
      * 获取所有用户（分页）
      * @param findActivityDTO 过滤条件
