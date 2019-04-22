@@ -44,6 +44,8 @@ public class ActivityVO {
     /**  管理员 **/
 
     private List<SimpleUserVO> otherAdmin;
-
+    
+    /** 当前报名人数 **/
+    private Integer memberNow;
 
 }
