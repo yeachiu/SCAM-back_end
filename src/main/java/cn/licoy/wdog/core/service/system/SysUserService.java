@@ -8,7 +8,8 @@ import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.SysResource;
 import cn.licoy.wdog.core.entity.system.SysRole;
 import cn.licoy.wdog.core.entity.system.SysUser;
-import cn.licoy.wdog.core.vo.system.NameAndIdVO;
+import cn.licoy.wdog.core.mapper.system.NameAndIdVO;
+import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
@@ -16,6 +17,16 @@ import com.baomidou.mybatisplus.service.IService;
 import java.util.List;
 
 public interface SysUserService extends IService<SysUser> {
+
+    /**
+     * 获取用户简要信息(id,username,realName)
+     */
+    SimpleUserVO findSimpleVOById(String id);
+
+    /**
+     * 获取活动管理员(id,username,realName)
+     */
+    List<SimpleUserVO> findAllSimpleVOByActiId(String actiId);
 
     /**
      * 根据用户名查找用户
