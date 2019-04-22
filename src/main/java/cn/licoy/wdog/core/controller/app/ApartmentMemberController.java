@@ -30,6 +30,13 @@ public class ApartmentMemberController {
         return ResponseResult.e(ResponseCode.OK,memberService.list(id));
     }
 
+    @PostMapping(value = {"/list/exadmin/{id}"})
+    @ApiOperation(value = "获取其他成员列表")
+    @SysLogs("获取其他成员列表")
+    public ResponseResult listExcludeAdmin(@PathVariable @ApiParam(value = "部门ID") String id){
+        return ResponseResult.e(ResponseCode.OK,memberService.listExcludeAdmin(id));
+    }
+
     @PostMapping(value = {"/add"})
     @ApiOperation(value = "添加成员")
     @SysLogs("添加成员")
