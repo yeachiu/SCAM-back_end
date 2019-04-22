@@ -14,6 +14,7 @@ import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
+import cn.licoy.wdog.core.vo.app.MemberVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -40,6 +41,8 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
     private SysUserService userService;
     @Autowired
     private ActivityAdminsService activityAdminsService;
+    @Autowired
+    private ApartmentMemberMapper mapper;
 
 
     @Override
@@ -186,6 +189,12 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的部门信息",aparId));
         }
         this.delete(new EntityWrapper<ApartmentMember>().eq("apar_id",aparId));
+    }
+
+    @Override
+    public List<MemberVO> listExcludeAdmin(String aparId) {
+        List<MemberVO> members = this.mapper.listExcludeAdmin(aparId);
+        return members;
     }
 }
 
