@@ -28,6 +28,7 @@ public class SysUser implements Serializable  {
     private Date createDate;
     @TableField(exist = false)
     private Integer authStatus;
+    private String avatar;
 
     private static final long serialVersionUID = 1L;
 
