@@ -17,6 +17,8 @@ public class ActivityVO {
 
     private String description;	//活动内容介绍及描述
 
+    private String address; //  地点
+
     private String pictureurl;	//配图文件路径
 
     private Date signupTime;	//报名起始时间
@@ -33,9 +35,11 @@ public class ActivityVO {
 
     private String createUser;
 
+    private String organizerId;
+
     /** 活动限制 **/
 
-    private List<SimpleAGroupVO> grouplimit;	//分组限制
+    private List<SimpleGroupVO> grouplimit;	//分组限制
 
     private Integer limitQuota;	//活动名额 默认不限
 
@@ -44,8 +48,13 @@ public class ActivityVO {
     /**  管理员 **/
 
     private List<SimpleUserVO> otherAdmin;
-    
+
     /** 当前报名人数 **/
     private Integer memberNow;
+
+    /** 主办方 **/
+    private SimpleApartmentVO organizer;
+
+
 
 }
