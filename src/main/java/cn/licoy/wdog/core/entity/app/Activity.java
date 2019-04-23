@@ -18,6 +18,8 @@ public class Activity extends Schema implements Serializable {
 	
 	private String description;	//活动内容介绍及描述
 	
+    private String address; //  地点
+	
 	private String pictureUrl;	//配图文件路径
 	
 	private Date signupTime;	//报名起始时间
