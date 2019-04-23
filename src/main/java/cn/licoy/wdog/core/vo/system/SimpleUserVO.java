@@ -10,5 +10,7 @@ public class SimpleUserVO {
     private String username;
 
     private String realName;
+    
+    private String avatar;
 
 }
