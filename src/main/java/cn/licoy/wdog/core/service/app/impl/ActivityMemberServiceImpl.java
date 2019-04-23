@@ -4,6 +4,7 @@ import cn.licoy.wdog.core.entity.app.ActivityMember;
 import cn.licoy.wdog.core.mapper.app.ActivityMemberMapper;
 import cn.licoy.wdog.core.service.app.ActivityMemberService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,ActivityMember> implements ActivityMemberService{
 
+    @Autowired
+    private ActivityMemberMapper mapper;
+
     @Override
     public Integer getSignupNumByActiId(String actiId) {
-        return null;
+        return mapper.getSignupNumByActiId(actiId);
     }
 }
