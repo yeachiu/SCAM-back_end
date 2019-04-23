@@ -28,5 +28,7 @@ public class UserUpdateDTO {
 
     @Size(min = 1, message = "请至少选择一个角色")
     private List<SysRole> roles;
+    
+    private String avatar;
 
 }
