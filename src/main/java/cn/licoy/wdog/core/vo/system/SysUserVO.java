@@ -21,5 +21,7 @@ public class SysUserVO {
 
     private String aparId;
     private String stuId;
+    
+    private String avatar;
 
 }
