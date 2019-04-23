@@ -1,7 +1,6 @@
 package cn.licoy.wdog.core.mapper.system;
 
 import cn.licoy.wdog.core.entity.system.SysUser;
-import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,10 +25,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "(SELECT uid FROM sys_user_auth)")
     List<NameAndIdVO> unauthList();
 
-    @Select("SELECT u.id, u.username, auth.real_name AS realName FROM sys_user u, sys_user_auth auth WHERE u.id = auth.uid AND u.id = #{id}")
+    @Select("SELECT u.id, u.username, auth.real_name AS realName, u.avatar FROM sys_user u, sys_user_auth auth WHERE u.id = auth.uid AND u.id = #{id}")
     SimpleUserVO findSimpleVOById(String id);
 
-    @Select("SELECT u.id, u.username, auth.real_name AS realName FROM sys_user u, sys_user_auth auth WHERE u.id = auth.uid AND u.id IN (SELECT user_id FROM activity_admins WHERE activity_id = #{actiId})")
+    @Select("SELECT u.id, u.username, auth.real_name AS realName, u.avatar FROM sys_user u, sys_user_auth auth WHERE u.id = auth.uid AND u.id IN (SELECT user_id FROM activity_admins WHERE activity_id = #{actiId})")
     List<SimpleUserVO> findAllSimpleVOByActiId(String actiId);
 
 }
