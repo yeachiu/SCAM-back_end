@@ -30,6 +30,8 @@ public class ActivityAddDTO {
     private String title;	//活动标题
 
     private String description;	//活动内容介绍及描述
+    
+    private String address; //  地点
 
     private String pictureUrl;	//配图文件路径
 
