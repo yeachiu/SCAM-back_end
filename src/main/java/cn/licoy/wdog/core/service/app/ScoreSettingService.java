@@ -1,7 +1,6 @@
 package cn.licoy.wdog.core.service.app;
 
 import cn.licoy.wdog.core.entity.app.ScoreSetting;
-import cn.licoy.wdog.core.vo.app.ScoreVO;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;

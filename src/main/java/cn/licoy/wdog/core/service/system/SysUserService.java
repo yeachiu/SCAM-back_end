@@ -124,5 +124,5 @@ public interface SysUserService extends IService<SysUser> {
     /**
      *
      */
-    List<NameAndIdVO> unauthList();
+    List<SimpleUserVO> unauthList();
 }

@@ -22,9 +22,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "WHERE u.id = a.uid AND a.uid = #{id}")
     String getStuIdById(String id);
 
-    @Select("SELECT s.id, s.username FROM sys_user s WHERE s.id NOT IN "+
+    @Select("SELECT u.id, u.username FROM sys_user u WHERE u.id NOT IN "+
             "(SELECT uid FROM sys_user_auth)")
-    List<NameAndIdVO> unauthList();
+    List<SimpleUserVO> unauthList();
 
     @Select("SELECT u.id, u.username, auth.real_name AS realName, u.avatar FROM sys_user u, sys_user_auth auth WHERE u.id = auth.uid AND u.id = #{id}")
     SimpleUserVO findSimpleVOById(String id);

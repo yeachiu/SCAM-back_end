@@ -12,7 +12,6 @@ import cn.licoy.wdog.core.dto.system.user.ResetPasswordDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.*;
-import cn.licoy.wdog.core.mapper.system.NameAndIdVO;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
@@ -338,8 +337,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
     }
 
     @Override
-    public List<NameAndIdVO> unauthList() {
-        List<NameAndIdVO> list = this.mapper.unauthList();
+    public List<SimpleUserVO> unauthList() {
+        List<SimpleUserVO> list = this.mapper.unauthList();
         if (list == null)
             return null;
         return list;
