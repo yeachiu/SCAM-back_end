@@ -1,6 +1,7 @@
 package cn.licoy.wdog.core.service.system.impl;
 
 import cn.licoy.encryptbody.util.MD5EncryptUtil;
+import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.common.util.Tools;
@@ -11,10 +12,10 @@ import cn.licoy.wdog.core.dto.system.user.ResetPasswordDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.*;
+import cn.licoy.wdog.core.mapper.system.NameAndIdVO;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
-import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -55,7 +56,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
 
     @Override
     public List<SimpleUserVO> findAllSimpleVOByActiId(String actiId) {
-        return this.mapper.findAllSimpleVOByActiId(actiId);
+        List<SimpleUserVO> list = this.mapper.findAllSimpleVOByActiId(actiId);
+        String path = ConstCode.staticResourcePath;
+        for(SimpleUserVO vo : list){
+            vo.setAvatar(path + vo.getAvatar());
+        }
+        return list;
     }
 
     @Override
@@ -64,6 +70,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         if(user == null){
             return null;
         }
+        String path = ConstCode.staticResourcePath;
+        user.setAvatar(path + user.getAvatar());
         user.setAuthStatus(userAuthService.selectAuthStatusByUid(user.getId()));
         user.setRoles(roleService.findAllRoleByUserId(user.getId(),hasResource));
         return user;
@@ -75,6 +83,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         if(user == null){
             return null;
         }
+        String path = ConstCode.staticResourcePath;
+        user.setAvatar(path + user.getAvatar());
         user.setAuthStatus(userAuthService.selectAuthStatusByUid(user.getId()));
         user.setRoles(roleService.findAllRoleByUserId(user.getId(),false));
         return user;
@@ -117,6 +127,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         if(user==null){
             throw RequestException.fail("用户不存在");
         }
+        String path = ConstCode.staticResourcePath;
+        user.setAvatar(path + user.getAvatar());
         //获取菜单/权限信息
         List<SysResource> allPer = userRolesRegexResource(roleService.findAllRoleByUserId(user.getId(),true));
         SysUserVO vo = new SysUserVO();
@@ -191,6 +203,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         userPage.getRecords().forEach(v->{
             SysUserVO vo = new SysUserVO();
             BeanUtils.copyProperties(v,vo);
+            vo.setAvatar(ConstCode.staticResourcePath + vo.getAvatar());
             //查找匹配所有用户的角色
             vo.setRoles(roleService.findAllRoleByUserId(v.getId(),false));
             userVOS.add(vo);

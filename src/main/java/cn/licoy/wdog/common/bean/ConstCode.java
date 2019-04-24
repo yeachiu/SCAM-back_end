@@ -27,4 +27,7 @@ public class ConstCode {
     /** Boolean类型 **/
     public static final Integer TRUE = 0;
     public static final Integer FALSE = 1;
+    
+    /** 静态资源访问路径 **/
+    public static final String staticResourcePath = "http://localhost:1000/upload";
 }

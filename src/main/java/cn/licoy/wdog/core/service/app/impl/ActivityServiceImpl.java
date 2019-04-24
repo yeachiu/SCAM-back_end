@@ -1,5 +1,6 @@
 package cn.licoy.wdog.core.service.app.impl;
 
+import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
@@ -69,6 +70,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
         List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
         for(ActivityVO acti : activities){
+            acti.setPictureurl(ConstCode.staticResourcePath + acti.getPictureurl());
             //获取分组限制
             List<SimpleGroupVO> limitList = limitService.findLimitByActiId(acti.getId());
             if (limitList != null && limitList.size()>0){
@@ -263,6 +265,21 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         }
         ActivityAbstractVO abstractVO = new ActivityAbstractVO();
         BeanUtils.copyProperties(activity,abstractVO);
+        abstractVO.setPictureurl(ConstCode.staticResourcePath + abstractVO.getPictureurl());
         return abstractVO;
+    }
+
+    /**
+     * 活动是否存在
+     *
+     * @param id
+     */
+    @Override
+    public Boolean isExistActivity(String id) {
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            return false;
+        }
+        return true;
     }
 }
