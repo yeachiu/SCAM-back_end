@@ -2,6 +2,7 @@ package cn.licoy.wdog.core.service.system.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
@@ -9,7 +10,6 @@ import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
 import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.system.SysUserAuthMapper;
-import cn.licoy.wdog.core.service.system.FindUserAuthDTO;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.StudentVO;

@@ -1,5 +1,6 @@
 package cn.licoy.wdog.core.service.system;
 
+import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
