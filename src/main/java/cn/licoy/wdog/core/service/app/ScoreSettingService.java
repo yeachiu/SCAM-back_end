@@ -15,7 +15,7 @@ public interface ScoreSettingService extends IService<ScoreSetting> {
     /**
      * 更新某个活动的学分设置数据
      */
-    void updateByActiId(String actiId, String jsonStrData);
+    void updateByActiId(String actiId, List<ScoreSetting> data);
 
 
 
