@@ -6,7 +6,6 @@ import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.*;
 import cn.licoy.wdog.core.entity.system.*;
-import cn.licoy.wdog.core.entity.system.SysUserAuth;
 import cn.licoy.wdog.core.mapper.app.ActivityMapper;
 import cn.licoy.wdog.core.service.app.*;
 import cn.licoy.wdog.core.service.system.SysUserAuthService;
