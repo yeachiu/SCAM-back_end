@@ -6,6 +6,8 @@ import cn.licoy.wdog.core.entity.app.ScoreSetting;
 import cn.licoy.wdog.core.mapper.app.ScoreSettingMapper;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.service.app.ScoreSettingService;
+import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.app.ScoreVO;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -26,23 +28,27 @@ public class ScoreSettingServiceImpl extends ServiceImpl<ScoreSettingMapper,Scor
     private ScoreSettingMapper mapper;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private SysUserService userService;
 
 
     /**
      * 更新某个活动的学分设置数据
      *
      * @param actiId
-     * @param jsonStrData
+     * @param updateData
      */
     @Override
-    public void updateByActiId(String actiId, String jsonStrData) {
+    public void updateByActiId(String actiId, List<ScoreSetting> updateData) {
         boolean exist = activityService.isExistActivity(actiId);
         if (!exist){
             throw RequestException.fail("获取失败，活动ID失效，请联系管理员");
         }
         //1.字符串数组转json对象数组
-        if (!jsonStrData.equals("")){
-            List<ScoreSetting> updateData = JSONArray.parseArray(jsonStrData,ScoreSetting.class);
+//        if (!data.equals("")){
+        if(updateData != null && updateData.size()>0){
+//            List<ScoreSetting> updateData = JSONArray.parseArray(data,ScoreSetting.class);
+
             if (updateData == null && updateData.size()< 1){
                 throw RequestException.fail("活动学分数据转换异常");
             }
@@ -54,7 +60,7 @@ public class ScoreSettingServiceImpl extends ServiceImpl<ScoreSettingMapper,Scor
                 List<ScoreSetting> toDelete = Tools.deepCopy(oldData);
                 toDelete.removeAll(updateData);
                 //添加
-                List<ScoreSetting> toAdd = Tools.deepCopy(oldData);
+                List<ScoreSetting> toAdd = Tools.deepCopy(updateData);
                 toAdd.removeAll(oldData);
                 //更新
                 updateData.retainAll(oldData);
@@ -71,8 +77,14 @@ public class ScoreSettingServiceImpl extends ServiceImpl<ScoreSettingMapper,Scor
                     }
                     this.deleteBatchIds(idList);
                 }
-                if (toAdd != null && toAdd.size()>0)
+                if (toAdd != null && toAdd.size()>0) {
+                    for (ScoreSetting score : toAdd){
+                        score.setAid(actiId);
+                        score.setCreateTime(new Date());
+                        score.setCreateUser(userService.getCurrentUser().getId());
+                    }
                     this.insertBatch(toAdd);
+                }
                 if (updateData != null && updateData.size()>0)
                     this.updateBatchById(updateData);
 
