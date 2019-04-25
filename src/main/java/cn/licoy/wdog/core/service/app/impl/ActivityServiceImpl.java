@@ -14,6 +14,7 @@ import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.*;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
+import cn.licoy.wdog.core.vo.system.SimpleUserAuthVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.alibaba.fastjson.JSONArray;
