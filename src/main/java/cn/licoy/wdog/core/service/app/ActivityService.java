@@ -70,7 +70,7 @@ public interface ActivityService extends IService<Activity> {
      * 获取活动简要信息
      */
     ActivityAbstractVO getAbstractById(String id);
-    
+
     /**
      * 活动是否存在
      */
