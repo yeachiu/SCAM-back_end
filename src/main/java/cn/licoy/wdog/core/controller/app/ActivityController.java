@@ -48,7 +48,7 @@ public class ActivityController {
     @SysLogs("分页获取活动数据")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult get(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") FindActivityDTO findActivityDTO){
-        return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityByAparId(findActivityDTO));
+        return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityBySplitPage(findActivityDTO));
     }
 
     @PostMapping(value = {"/list/cancel"})
@@ -57,6 +57,14 @@ public class ActivityController {
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult getCancel(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") FindActivityDTO findActivityDTO){
         return ResponseResult.e(ResponseCode.OK,activityService.getCancelActivityBySplitPage(findActivityDTO));
+    }
+
+    @PostMapping(value = {"/list/aparId"})
+    @ApiOperation(value = "分页获取部门活动数据")
+    @SysLogs("分页获取活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getByAparId(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") FindActivityDTO findActivityDTO){
+        return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityByAparId(findActivityDTO));
     }
 
     @PostMapping(value = {"/statusChange/{id}/{status}"})
