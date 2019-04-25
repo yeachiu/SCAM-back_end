@@ -13,7 +13,6 @@ import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.*;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
-import cn.licoy.wdog.core.vo.system.SimpleUserAuthVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.alibaba.fastjson.JSONArray;
@@ -68,53 +67,26 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         //校验
         Boolean exist = apartmentService.existApartment(findDTO.getId());
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
-        List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
-        for(ActivityVO acti : activities){
-            acti.setPictureurl(ConstCode.staticResourcePath + acti.getPictureurl());
-            //获取分组限制
-            List<SimpleGroupVO> limitList = limitService.findLimitByActiId(acti.getId());
-            if (limitList != null && limitList.size()>0){
-                acti.setGrouplimit(limitList);
-            }
-            //获取管理员
-            List<SimpleUserVO> adminList = userService.findAllSimpleVOByActiId(acti.getId());
-            if (adminList != null && adminList.size() > 0){
-                acti.setOtherAdmin(adminList);
-            }
-            //获取主办部门信息
-            ApartmentVO apartmentVO = apartmentService.getById(acti.getOrganizerId());
-            SimpleApartmentVO simpleApartmentVO = new SimpleApartmentVO();
-            BeanUtils.copyProperties(apartmentVO,simpleApartmentVO);
-            acti.setOrganizer(simpleApartmentVO);
-            //获取当前报名人数
-            acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+        List<ActivityVO> activities = this.mapper.findCancelActivitiesByAparId(findDTO.getId());
 
-        }
-        Page<ActivityVO> activitiesPage = new Page<>(findDTO.getPage(),findDTO.getPageSize());
-        activitiesPage.setRecords(activities);
-        return activitiesPage;
-    }
-
-    /**
-     * 活动列表(分页)
-     * @param findActivityDTO 过滤条件
-     * @return
-     * #过滤取消状态#
-     */
-    @Override
-    public Page<ActivityVO> getAllActivityBySplitPage(FindActivityDTO findActivityDTO) {
-        return null;
+        return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
     }
 
     /**
      * 活动列表(回收站)
-     * @param findActivityDTO
+     * @param findDTO
      * @return
      */
     @Override
-    public Page<ActivityVO> getCancelActivityBySplitPage(FindActivityDTO findActivityDTO){
-        return null;
+    public Page<ActivityVO> getCancelActivityBySplitPage(FindActivityDTO findDTO){
+        //校验
+        Boolean exist = apartmentService.existApartment(findDTO.getId());
+        if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
+        List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
+
+        return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
     }
+
 
     /**
      * 添加活动
@@ -191,18 +163,10 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
             limitService.insertBatch(limitList);
         }
         /** 表单规则 **/
-        if (!addDTO.getRules().equals("")){
-            ActivityForm actiForm = new ActivityForm();
-            actiForm.setActivityId(actiId);
-            actiForm.setRules(addDTO.getRules());
-            actiForm.setCreateTime(new Date());
-            actiForm.setCreateUser(userService.getCurrentUser().getId());
-//            actiForm.setStatus();
-            formService.insert(actiForm);
-        }
+        if (!addDTO.getRules().equals(""))
+            formService.add(actiId,addDTO.getRules());
 
         /** 学分设置 **/
-
         //1.字符串数组转json对象数组
         if (!addDTO.getScoreData().equals("")){
             List<ScoreSetting> scoreList = JSONArray.parseArray(addDTO.getScoreData(),ScoreSetting.class);
@@ -229,11 +193,12 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     }
 
     @Override
-    public void cancel(String id) {
+    public void remove(String id) {
         Activity activity = this.selectById(id);
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
         }
+        this.remove(id);
     }
 
     @Override
@@ -255,6 +220,10 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",statusChangeDTO.getAid()));
         }
+        activity.setStatus(statusChangeDTO.getStatus());
+        activity.setModifyUser(userService.getCurrentUser().getId());
+        activity.setModifyTime(new Date());
+        this.updateById(activity);
     }
 
     @Override
@@ -281,5 +250,32 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
             return false;
         }
         return true;
+    }
+
+    private Page<ActivityVO> changeListToPage(List<ActivityVO> list, int currentPage, int pageSize){
+        for(ActivityVO acti : list){
+            acti.setPictureurl(ConstCode.staticResourcePath + acti.getPictureurl());
+            //获取分组限制
+            List<SimpleGroupVO> limitList = limitService.findLimitByActiId(acti.getId());
+            if (limitList != null && limitList.size()>0){
+                acti.setGrouplimit(limitList);
+            }
+            //获取管理员
+            List<SimpleUserVO> adminList = userService.findAllSimpleVOByActiId(acti.getId());
+            if (adminList != null && adminList.size() > 0){
+                acti.setOtherAdmin(adminList);
+            }
+            //获取主办部门信息
+            ApartmentVO apartmentVO = apartmentService.getById(acti.getOrganizerId());
+            SimpleApartmentVO simpleApartmentVO = new SimpleApartmentVO();
+            BeanUtils.copyProperties(apartmentVO,simpleApartmentVO);
+            acti.setOrganizer(simpleApartmentVO);
+            //获取当前报名人数
+            acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+
+        }
+        Page<ActivityVO> activitiesPage = new Page<>(currentPage,pageSize);
+        activitiesPage.setRecords(list);
+        return activitiesPage;
     }
 }

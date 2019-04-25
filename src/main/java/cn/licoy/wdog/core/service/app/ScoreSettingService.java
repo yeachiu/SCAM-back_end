@@ -18,5 +18,4 @@ public interface ScoreSettingService extends IService<ScoreSetting> {
     void updateByActiId(String actiId, List<ScoreSetting> data);
 
 
-
 }

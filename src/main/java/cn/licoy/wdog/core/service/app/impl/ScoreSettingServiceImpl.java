@@ -7,7 +7,6 @@ import cn.licoy.wdog.core.mapper.app.ScoreSettingMapper;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.service.app.ScoreSettingService;
 import cn.licoy.wdog.core.service.system.SysUserService;
-import cn.licoy.wdog.core.vo.app.ScoreVO;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;

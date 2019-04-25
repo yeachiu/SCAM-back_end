@@ -48,7 +48,7 @@ public class ActivityController {
     @SysLogs("分页获取活动数据")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult get(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") FindActivityDTO findActivityDTO){
-        return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityBySplitPage(findActivityDTO));
+        return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityByAparId(findActivityDTO));
     }
 
     @PostMapping(value = {"/list/cancel"})
