@@ -4,7 +4,9 @@ import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.entity.app.ActivityForm;
 import cn.licoy.wdog.core.mapper.app.ActivityFormMapper;
 import cn.licoy.wdog.core.service.app.ActivityFormService;
+import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.service.system.SysUserService;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class ActivityFormServiceImpl extends ServiceImpl<ActivityFormMapper,Acti
 
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private ActivityService activityService;
     /**
      * 获取活动报名表规则
      *
@@ -58,6 +62,17 @@ public class ActivityFormServiceImpl extends ServiceImpl<ActivityFormMapper,Acti
      */
     @Override
     public void updateByActiId(String actiId, String rules) {
-
+        boolean exist = activityService.isExistActivity(actiId);
+        if (!exist){
+            throw RequestException.fail("更新失败，活动ID失效，请联系管理员");
+        }
+        ActivityForm activityForm = this.selectOne(new EntityWrapper<ActivityForm>().eq("activity_id",actiId));
+        if (activityForm == null){
+            throw RequestException.fail("更新失败，数据获取失败，请刷新重试");
+        }
+        activityForm.setRules(rules);
+        activityForm.setModifyUser(userService.getCurrentUser().getId());
+        activityForm.setModifyTime(new Date());
+        this.updateById(activityForm);
     }
 }
