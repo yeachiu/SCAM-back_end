@@ -3,6 +3,7 @@ package cn.licoy.wdog.core.controller.app;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
+import cn.licoy.wdog.core.dto.app.activity.ActivityFormUpdateDTO;
 import cn.licoy.wdog.core.service.app.ActivityFormService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,13 +28,12 @@ public class ActivityFormController {
         return (ResponseResult.e(ResponseCode.OK,formService.getByActiId(actiId)));
     }
 
-    @PostMapping(value = {"/update/{id}"})
+    @PostMapping(value = {"/update"})
     @ApiOperation(value = "更新某个活动的学分设置数据")
     @SysLogs("更新某个活动的学分设置数据")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult update(@PathVariable(value = "id") @ApiParam(value = "活动ID标识") String actiId,
-                                 @RequestBody @ApiParam(value = "更新的数据") String rules){
-        this.formService.updateByActiId(actiId,rules);
+    public ResponseResult update(@RequestBody @ApiParam(value = "更新的数据") ActivityFormUpdateDTO data){
+        this.formService.updateByActiId(data.getActiId(),data.getRules());
         return (ResponseResult.e(ResponseCode.OK));
     }
 }
