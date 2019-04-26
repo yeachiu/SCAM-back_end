@@ -5,6 +5,7 @@ import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
+import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import io.swagger.annotations.Api;
@@ -67,11 +68,21 @@ public class ActivityController {
         return ResponseResult.e(ResponseCode.OK,activityService.getAllActivityByAparId(findActivityDTO));
     }
 
-    @PostMapping(value = {"/statusChange/{id}/{status}"})
+    @PostMapping(value = {"/statusChange"})
     @ApiOperation(value = "改变活动状态")
     @SysLogs("改变活动状态")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult statusChange(@PathVariable("id") @ApiParam(value = "活动标识ID")String id,Integer status){
+    public ResponseResult statusChange(@RequestBody StatusChangeDTO statusChangeDTO){
+        this.activityService.statusChange(statusChangeDTO);
+        return ResponseResult.e(ResponseCode.OK);
+    }
+
+    @PostMapping(value = {"/remove/{id}"})
+    @ApiOperation(value = "删除活动数据")
+    @SysLogs("删除活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult statusChange(@PathVariable(value = "id") String id){
+        this.activityService.remove(id);
         return ResponseResult.e(ResponseCode.OK);
     }
 }
