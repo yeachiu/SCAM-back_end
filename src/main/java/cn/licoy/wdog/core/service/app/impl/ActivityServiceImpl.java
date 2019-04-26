@@ -67,7 +67,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         //校验
         Boolean exist = apartmentService.existApartment(findDTO.getId());
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
-        List<ActivityVO> activities = this.mapper.findCancelActivitiesByAparId(findDTO.getId());
+        List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
 
         return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
     }
@@ -82,8 +82,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         //校验
         Boolean exist = apartmentService.existApartment(findDTO.getId());
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
-        List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
 
+        List<ActivityVO> activities = this.mapper.findCancelActivitiesByAparId(findDTO.getId());
         return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
     }
 
@@ -198,7 +198,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
         }
-        this.remove(id);
+        this.deleteById(id);
     }
 
     @Override
