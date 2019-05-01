@@ -2,6 +2,8 @@ package cn.licoy.wdog.core.service.app.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.common.util.StringUtils;
+import cn.licoy.wdog.common.util.Tools;
 import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
 import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
 import cn.licoy.wdog.core.entity.app.*;
@@ -68,8 +70,12 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         Boolean exist = apartmentService.existApartment(findDTO.getId());
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
         List<ActivityVO> activities = this.mapper.findActivitiesExCancelByAparId(findDTO.getId());
-
-        return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
+        for(ActivityVO acti : activities){
+            this.changeToVO(acti);
+        }
+        Page<ActivityVO> activitiesPage = new Page<>(findDTO.getPage(),findDTO.getPageSize());
+        activitiesPage.setRecords(activities);
+        return activitiesPage;
     }
 
     /**
@@ -84,7 +90,12 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",findDTO.getId()));
 
         List<ActivityVO> activities = this.mapper.findCancelActivitiesByAparId(findDTO.getId());
-        return this.changeListToPage(activities,findDTO.getPage(),findDTO.getPageSize());
+        for(ActivityVO acti : activities){
+            this.changeToVO(acti);
+        }
+        Page<ActivityVO> activitiesPage = new Page<>(findDTO.getPage(),findDTO.getPageSize());
+        activitiesPage.setRecords(activities);
+        return activitiesPage;
     }
 
 
@@ -190,6 +201,17 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
         }
+        SysUserVO currentUser = userService.getCurrentUser();
+        BeanUtils.copyProperties(updateDTO,activity);
+        activity.setPictureUrl(activity.getPictureUrl().replace(ConstCode.staticResourcePath,""));
+        activity.setModifyTime(new Date());
+        activity.setModifyUser(currentUser.getId());
+        this.updateById(activity);
+
+        /** 活动管理员 **/
+        adminsService.updateByActiId(activity.getId(),updateDTO.getOtherAdmin());
+        /** 分组限制 **/
+        limitService.updateByActiId(activity.getId(),updateDTO.getGroupId());
     }
 
     @Override
@@ -226,16 +248,19 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         this.updateById(activity);
     }
 
+    /**
+     * 获取单个活动信息(详细)
+     *
+     * @param id
+     */
     @Override
-    public ActivityAbstractVO getAbstractById(String id) {
+    public ActivityVO getById(String id) {
         Activity activity = this.selectById(id);
-        if (activity == null){
-            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
-        }
-        ActivityAbstractVO abstractVO = new ActivityAbstractVO();
-        BeanUtils.copyProperties(activity,abstractVO);
-        abstractVO.setPictureurl(ConstCode.staticResourcePath + abstractVO.getPictureurl());
-        return abstractVO;
+        if (activity == null)
+            throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",id));
+        ActivityVO activityVO = new ActivityVO();
+        BeanUtils.copyProperties(activity,activityVO);
+        return this.changeToVO(activityVO);
     }
 
     /**
@@ -252,30 +277,149 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         return true;
     }
 
-    private Page<ActivityVO> changeListToPage(List<ActivityVO> list, int currentPage, int pageSize){
-        for(ActivityVO acti : list){
-            acti.setPictureurl(ConstCode.staticResourcePath + acti.getPictureurl());
-            //获取分组限制
-            List<SimpleGroupVO> limitList = limitService.findLimitByActiId(acti.getId());
-            if (limitList != null && limitList.size()>0){
-                acti.setGrouplimit(limitList);
-            }
-            //获取管理员
-            List<SimpleUserVO> adminList = userService.findAllSimpleVOByActiId(acti.getId());
-            if (adminList != null && adminList.size() > 0){
-                acti.setOtherAdmin(adminList);
-            }
-            //获取主办部门信息
-            ApartmentVO apartmentVO = apartmentService.getById(acti.getOrganizerId());
-            SimpleApartmentVO simpleApartmentVO = new SimpleApartmentVO();
-            BeanUtils.copyProperties(apartmentVO,simpleApartmentVO);
-            acti.setOrganizer(simpleApartmentVO);
-            //获取当前报名人数
-            acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+    private ActivityVO changeToVO(ActivityVO acti){
 
+        acti.setPictureUrl(ConstCode.staticResourcePath + acti.getPictureUrl());
+        //获取分组限制
+        List<SimpleGroupVO> limitList = limitService.findLimitByActiId(acti.getId());
+        if (limitList != null && limitList.size()>0){
+            acti.setGrouplimit(limitList);
         }
-        Page<ActivityVO> activitiesPage = new Page<>(currentPage,pageSize);
-        activitiesPage.setRecords(list);
-        return activitiesPage;
+        //获取管理员
+        List<SimpleUserVO> adminList = userService.findAllSimpleVOByActiId(acti.getId());
+        if (adminList != null && adminList.size() > 0){
+            acti.setOtherAdmin(adminList);
+        }
+        //获取主办部门信息
+        ApartmentVO apartmentVO = apartmentService.getById(acti.getOrganizerId());
+        SimpleApartmentVO simpleApartmentVO = new SimpleApartmentVO();
+        BeanUtils.copyProperties(apartmentVO,simpleApartmentVO);
+        acti.setOrganizer(simpleApartmentVO);
+        //获取当前报名人数
+        acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
+
+
+        return acti;
+    }
+
+    /******************************************************************************************************
+     *
+     *   ***  客户端请求 ***
+     *
+     ******************************************************************************************************/
+
+    /**
+     * 根据活动ID获取该活动简要信息
+     * @param id
+     * @return
+     */
+    @Override
+    public ActivityAbstractVO getAbstractById(String id) {
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
+        ActivityAbstractVO abstractVO = new ActivityAbstractVO();
+        BeanUtils.copyProperties(activity,abstractVO);
+        abstractVO.setDescription(StringUtils.subTextString(abstractVO.getDescription(),100));
+        ApartmentVO apartmentVO = apartmentService.getById(abstractVO.getOrganizerId());
+        if(apartmentVO != null)
+            abstractVO.setOrganizerName(apartmentVO.getName());
+        abstractVO.setPictureUrl(ConstCode.staticResourcePath + abstractVO.getPictureUrl());
+        return abstractVO;
+    }
+
+    /**
+     * 获取所有有效活动数据
+     * @return
+     */
+    @Override
+    public List<ActivityAbstractVO> getAllEffectiveActivity() {
+        List<ActivityAbstractVO> activities = mapper.getAllEffectiveActivity();
+        for(ActivityAbstractVO abstractVO : activities){
+            abstractVO.setDescription(StringUtils.subTextString(abstractVO.getDescription(),200));
+            ApartmentVO apartmentVO = apartmentService.getById(abstractVO.getOrganizerId());
+            if(apartmentVO != null)
+                abstractVO.setOrganizerName(apartmentVO.getName());
+            abstractVO.setPictureUrl(ConstCode.staticResourcePath + abstractVO.getPictureUrl());
+        }
+        return activities;
+    }
+
+    /**
+     * 获取用户权限下所有活动信息
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<ActivityAbstractVO> getByUserId(String userId) {
+        /** 1.获取用户分组ID
+         *  2.根据groupId获取该分组具有权限的活动IDS
+         *  3.获取相应的活动信息列表
+         */
+        Boolean exist = userService.isExist(userId);
+        if (!exist){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的用户数据，请联系管理员",userId));
+        }
+        String groupId = userAuthService.getGroupIdByUserId(userId);
+        //获取所属的分组
+        List<String> groupIds = groupService.findAllBelongGroupIds(groupId);
+        //获取所有分组关联的活动数据
+        List<String> actiIds = new ArrayList<>();
+        for(String id : groupIds){
+            actiIds.addAll(limitService.findActiIdsByGroupId(id));
+        }
+        //去重
+        actiIds = Tools.removeDuplicate(actiIds);
+        List<ActivityAbstractVO> list = new ArrayList<>();
+        for (String actiId:actiIds ) {
+            ActivityAbstractVO abstractVO = this.getAbstractById(actiId);
+            if (abstractVO != null){
+                list.add(abstractVO);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取用户参与的所有活动数据
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<ActivityAbstractVO> getJoinInByUserId(String userId) {
+        /**
+         * 用户参与活动的记录在activity_member数据表中
+         */
+        //参数校验
+        Boolean exist = userService.isExist(userId);
+        if (!exist){
+            throw RequestException.fail(String.format("数据错误，不存在ID为%s的用户数据，请联系管理员",userId));
+        }
+
+        //获取活动IDS
+        List<String> actiIds = activityMemberService.getActiIdsByUid(userId);
+
+        //获取活动信息
+        List<ActivityAbstractVO> list = new ArrayList<>();
+        for (String actiId:actiIds ) {
+            ActivityAbstractVO abstractVO = this.getAbstractById(actiId);
+            if (abstractVO != null){
+                list.add(abstractVO);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取用户关注的所有活动数据
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<ActivityAbstractVO> getFocusByUserId(String userId) {
+        return null;
     }
 }

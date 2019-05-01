@@ -19,7 +19,7 @@ public class ActivityVO {
 
     private String address; //  地点
 
-    private String pictureurl;	//配图文件路径
+    private String pictureUrl;	//配图文件路径
 
     private Date signupTime;	//报名起始时间
 

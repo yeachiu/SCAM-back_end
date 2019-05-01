@@ -7,6 +7,7 @@ import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.app.impl.FindClazzDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +28,20 @@ public class GroupController {
     @SysLogs("获取所有的分组列表")
     public ResponseResult list(){
         return ResponseResult.e(ResponseCode.OK,groupService.list());
+    }
+
+    @PostMapping(value = {"/list/profession"})
+    @ApiOperation(value = "获取所有专业")
+    @SysLogs("获取所有专业")
+    public ResponseResult findAllProfession() {
+        return ResponseResult.e(ResponseCode.OK,groupService.findAllProfession());
+    }
+
+    @PostMapping(value = {"/list/clazz"})
+    @ApiOperation(value = "获取所有专业")
+    @SysLogs("获取所有专业")
+    public ResponseResult findBydictIdAndPeriod(@RequestBody @Validated @ApiParam(value = "专业和年级") FindClazzDTO findClazzDTO) {
+        return ResponseResult.e(ResponseCode.OK,groupService.findBydictIdAndPeriod(findClazzDTO));
     }
 
     @PostMapping(value = {"/list/format"})

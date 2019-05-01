@@ -35,6 +35,8 @@ public class SysUserAuth implements Serializable {
 	
 	private Integer status;	//认证状态(0 = 认证中; 1 = 已认证; 2 = 不通过; -1 = 已删除)
 
+	private String groupId;
+
     private Date createTime;
 
     private String createUser;

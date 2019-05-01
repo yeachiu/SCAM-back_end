@@ -26,6 +26,11 @@ public interface ActivityService extends IService<Activity> {
     Page<ActivityVO> getCancelActivityBySplitPage(FindActivityDTO findActivityDTO);
 
     /**
+     * 获取单个活动信息(详细)
+     */
+    ActivityVO getById(String id);
+
+    /**
      * 创建活动
      */
     void add (ActivityAddDTO addDTO);
@@ -60,4 +65,31 @@ public interface ActivityService extends IService<Activity> {
      * 活动是否存在
      */
     Boolean isExistActivity(String id);
+
+    /**
+     * 获取用户权限下所有活动信息
+     * @param userId
+     * @return
+     */
+    List<ActivityAbstractVO> getByUserId(String userId);
+
+    /**
+     * 获取用户参与的所有活动数据
+     * @param userId
+     * @return
+     */
+    List<ActivityAbstractVO> getJoinInByUserId(String userId);
+
+    /**
+     * 获取用户关注的所有活动数据
+     * @param userId
+     * @return
+     */
+    List<ActivityAbstractVO> getFocusByUserId(String userId);
+
+    /**
+     * 获取所有有效活动数据
+     * @return
+     */
+    List<ActivityAbstractVO> getAllEffectiveActivity();
 }

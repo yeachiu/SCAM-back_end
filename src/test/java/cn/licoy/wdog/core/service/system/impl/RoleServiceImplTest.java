@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 /**
@@ -24,8 +25,11 @@ public class RoleServiceImplTest {
 
     @Test
     public void test(){
-        SysRole role = SysRole.builder().name("1").build();
-        roleService.insert(role);
+//        SysRole role = SysRole.builder().name("1").build();
+//        roleService.insert(role);
+
+
+
     }
 
 }

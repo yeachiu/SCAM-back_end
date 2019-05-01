@@ -7,24 +7,14 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-
 @Data
-public class SysUserVO {
+public class ClientSysUserVO {
 
     private String id;
     private String username;
     private Integer age;
-    private Integer status;
+    private String avatar;
     private Date createDate;
 
-
-    private List<SysRole> roles;
-    private List<SysResource> resources;
-
-    private String aparId;
-    private String stuId;
-    private String avatar;
-
     private UserAuthVO userAuth;
-
 }

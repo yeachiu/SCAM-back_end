@@ -4,6 +4,7 @@ import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
+import cn.licoy.wdog.core.service.app.impl.FindClazzDTO;
 import cn.licoy.wdog.core.vo.app.GroupSelectVO;
 import cn.licoy.wdog.core.vo.app.GroupVO;
 import com.baomidou.mybatisplus.service.IService;
@@ -20,7 +21,7 @@ public interface AGroupService extends IService<AGroup> {
 
     List<GroupSelectVO> listToSelect();
 
-    List<GroupSelectVO> findAllChildren(GroupSelectVO dad);
+    void findAllChildren(GroupSelectVO dad);
 
     /**
      * 添加分组
@@ -61,5 +62,25 @@ public interface AGroupService extends IService<AGroup> {
      * @return
      */
     Boolean existGroup (ExistGroupDTO dto);
-	
+
+
+    /**
+     * 获取所属的所有分组
+     * @param groupId
+     * @return
+     */
+    List<String> findAllBelongGroupIds(String groupId);
+
+    /**
+     * 获取所有专业分组
+     * @return
+     */
+    List<GroupSelectVO> findAllProfession();
+
+    /**
+     * 根据dictId&period获取分组
+     * @param findClazzDTO
+     * @return
+     */
+    List<GroupSelectVO> findBydictIdAndPeriod(FindClazzDTO findClazzDTO);
 }

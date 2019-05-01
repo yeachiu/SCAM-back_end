@@ -12,4 +12,11 @@ public interface ActivityAdminsService extends IService<ActivityAdmins> {
      * 获取成员参与的活动简要信息
      */
     List<ActivityAbstractVO> findActiAbstractByAdminId(String uid);
+
+    /**
+     * 更新活动管理员信息
+     * @param actiId
+     * @param otherAdmin
+     */
+    void updateByActiId(String actiId, String otherAdmin);
 }

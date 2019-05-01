@@ -14,5 +14,18 @@ public interface ActivityLimitService extends IService<ActivityLimit> {
      * @return
      */
     List<SimpleGroupVO> findLimitByActiId(String actiId);
+
+    /**
+     * 某分组权限下的活动ID
+     */
+    List<String> findActiIdsByGroupId(String groupId);
+
+    /**
+     * 更新活动分组信息
+     * @param actiId
+     * @param groupId
+     */
+    void updateByActiId(String actiId, String groupId);
+
 	
 }

@@ -21,5 +21,7 @@ public interface AGroupMapper extends BaseMapper<AGroup>  {
 
     @Select("SELECT son.`name` AS title , son.id, son.dict_id FROM a_group dad, a_group  son WHERE dad.id = son.parent_id AND dad.id = #{id}")
     List<GroupSelectVO> findChildren(String id);
-	
+
+    @Select("SELECT g.`name` AS title, g.id, g.dict_id FROM a_group g WHERE g.class_num IS NOT NULL AND g.period = 2018 AND g.dict_id = (SELECT dict_id FROM a_group WHERE id ='1121060658150907906')")
+    List<GroupSelectVO> listByDictIdAndPeriod(String professionId, String period);
 }

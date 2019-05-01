@@ -12,12 +12,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Licoy
- * @version 2018/4/28/9:46
- */
 public class Tools {
 
     /**
@@ -103,4 +100,18 @@ public class Tools {
         return dest;
     }
 
+    /**
+     * 去除List集合重复元素
+     * @param list
+     * @return
+     */
+    public static List removeDuplicate(List list){
+        List listTemp = new ArrayList();
+        for(int i=0;i<list.size();i++){
+            if(!listTemp.contains(list.get(i))){
+                listTemp.add(list.get(i));
+            }
+        }
+        return listTemp;
+    }
 }

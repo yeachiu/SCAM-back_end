@@ -30,4 +30,8 @@ public class ConstCode {
     
     /** 静态资源访问路径 **/
     public static final String staticResourcePath = "http://localhost:1000/upload";
+
+    /** 根目录代码 **/
+    public static final String PERIOD  = "PERIOD";
+    public static final String ROOT = "ROOT";
 }

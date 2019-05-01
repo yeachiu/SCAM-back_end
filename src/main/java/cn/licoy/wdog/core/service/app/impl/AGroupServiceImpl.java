@@ -6,7 +6,9 @@ import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
+import cn.licoy.wdog.core.entity.app.ActivityLimit;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
+import cn.licoy.wdog.core.entity.system.SysUser;
 import cn.licoy.wdog.core.mapper.app.AGroupMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
@@ -37,6 +39,65 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
     private SysUserService userService;
     @Autowired
     private AGroupMapper mapper;
+
+    /**
+     * 获取所属的所有分组
+     *
+     * @param groupId
+     * @return
+     */
+    @Override
+    public List<String> findAllBelongGroupIds(String groupId) {
+        List<String> list = new ArrayList<>();
+        list.add(groupId);
+        // 年级
+        AGroup group = this.selectById(groupId);
+//        AGroup period = this.selectOne(new EntityWrapper<AGroup>()
+//                .eq("period",group.getPeriod())
+//                .and()
+//                .isNull("dict_id,class_num,what_class"));
+        AGroup period = this.selectOne(new EntityWrapper<AGroup>()
+                .eq("parent_id",ConstCode.PERIOD));
+
+        list.add(period.getId());
+        // parentId
+        this.getParentIdsByGroup(group,list);
+        return list;
+    }
+
+    /**
+     * 根据dictId&period获取分组
+     *
+     * @param findClazzDTO
+     * @return
+     */
+    @Override
+    public List<GroupSelectVO> findBydictIdAndPeriod(FindClazzDTO findClazzDTO) {
+        return mapper.listByDictIdAndPeriod(findClazzDTO.getProfessionId(),findClazzDTO.getPeriod());
+    }
+
+    /**
+     * 获取所有专业分组
+     * @return
+     */
+    @Override
+    public List<GroupSelectVO> findAllProfession() {
+        //1.学院组
+        List<GroupSelectVO> list = this.mapper.listByRoot();
+
+        return list;
+    }
+
+    private void getParentIdsByGroup(AGroup group,List<String> list){
+        if(group.getParentId() != null){
+            list.add(group.getParentId());
+            AGroup ele = this.selectById(group.getParentId());
+            if(ele.getParentId() != null && !ele.getParentId().equals(ConstCode.ROOT)){
+                this.getParentIdsByGroup(ele,list);
+            }
+        }
+    }
+
     /**
      * 分组列表
      * @return
@@ -89,7 +150,7 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
     }
 
     @Override
-    public List<GroupSelectVO> findAllChildren(GroupSelectVO dad) {
+    public void findAllChildren(GroupSelectVO dad) {
         List<GroupSelectVO> children = this.mapper.findChildren(dad.getId());
         if (children != null && children.size() > 0){
             dad.setChildren(children);
@@ -97,8 +158,9 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
                 this.findAllChildren(vo);
             }
         }
-        return null;
+
     }
+
 
     /**
      * 根据DTO数据构建分组数据
@@ -282,4 +344,6 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
 
         return groupCompare.getId();
     }
+
+
 }

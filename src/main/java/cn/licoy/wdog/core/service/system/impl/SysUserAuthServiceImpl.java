@@ -41,6 +41,8 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     @Autowired
     private SysUserAuthMapper mapper;
 
+
+    /** "认证中"状态的认证列表 **/
     @Override
     public Page<UserAuthVO> inauthList(FindUserAuthDTO dto) {
         Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
@@ -48,6 +50,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuthVOPage;
     }
 
+    /** 分页获取认证列表 **/
     @Override
     public Page<UserAuthVO> list(FindUserAuthDTO dto) {
         Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
@@ -55,6 +58,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuthVOPage;
     }
 
+    /** "已认证"状态的认证列表 **/
     @Override
     public List<UserAuthVO> alreadyList() {
         List<UserAuthVO> userAuthVOList = mapper.alreadyList();
@@ -62,6 +66,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuthVOList;
     }
 
+    /** "已认证"状态的认证列表(分页) **/
     @Override
     public Page<UserAuthVO> alreadyList(FindUserAuthDTO dto) {
         List<UserAuthVO> userAuthVOList = this.alreadyList();
@@ -70,6 +75,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return authVOPage;
     }
 
+    /** 认证用户列表，排除部门管理员 **/
     @Override
     public List<UserAuthVO> alreadyListExAdmin() {
         List<UserAuthVO> userAuthVOList = mapper.alreadyListExAdmin();
@@ -77,6 +83,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuthVOList;
     }
 
+    /** 认证用户列表，排除部门成员 **/
     @Override
     public List<UserAuthVO> alreadyListExMember() {
         List<UserAuthVO> userAuthVOList = mapper.alreadyListExMember();
@@ -84,10 +91,17 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuthVOList;
     }
 
+    /** 根据ID获取认证信息 **/
     @Override
     public UserAuthVO getById(String id) {
         UserAuthVO userAuthVO = mapper.getById(id);
         return userAuthVO;
+    }
+
+    /** 根据用户ID获取认证信息 **/
+    @Override
+    public UserAuthVO getByUserId(String uid) {
+        return mapper.getByUserId(uid);
     }
 
     /**************************************************************************************************/
@@ -260,5 +274,15 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         userAuth.setCreateTime(new Date());
         userAuth.setCreateUser(currentUser.getId());
         this.insert(userAuth);
+    }
+
+    /**
+     * 获取学生所在分组
+     *
+     * @param userId
+     */
+    @Override
+    public String getGroupIdByUserId(String userId) {
+        return this.mapper.getGroupIdByUserId(userId);
     }
 }

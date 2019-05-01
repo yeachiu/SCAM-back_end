@@ -15,8 +15,10 @@ import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
+import cn.licoy.wdog.core.vo.system.ClientSysUserVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
+import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -50,7 +52,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
 
     @Override
     public SimpleUserVO findSimpleVOById(String id) {
-        return this.mapper.findSimpleVOById(id);
+        SimpleUserVO user = this.mapper.findSimpleVOById(id);
+        user.setAvatar(ConstCode.staticResourcePath + user.getAvatar());
+        return user;
     }
 
     @Override
@@ -202,9 +206,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         userPage.getRecords().forEach(v->{
             SysUserVO vo = new SysUserVO();
             BeanUtils.copyProperties(v,vo);
+            //用户头像
             vo.setAvatar(ConstCode.staticResourcePath + vo.getAvatar());
             //查找匹配所有用户的角色
             vo.setRoles(roleService.findAllRoleByUserId(v.getId(),false));
+            vo.setUserAuth(userAuthService.getByUserId(v.getId()));
             userVOS.add(vo);
         });
         userVOPage.setRecords(userVOS);
@@ -341,6 +347,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
         List<SimpleUserVO> list = this.mapper.unauthList();
         if (list == null)
             return null;
+        for (SimpleUserVO vo:list) {
+            vo.setAvatar(ConstCode.staticResourcePath + vo.getAvatar());
+        }
         return list;
+    }
+
+    /**********************************************************************************************
+     *
+     *                                      ** 客户端接口 **
+     *
+     **********************************************************************************************/
+
+    /**
+     * 获取用户数据
+     *
+     * @return
+     */
+    @Override
+    public ClientSysUserVO getUserDataById(String id) {
+        ClientSysUserVO userVO = new ClientSysUserVO();
+        SysUser user = this.selectById(id);
+        BeanUtils.copyProperties(user,userVO);
+        userVO.setAvatar(ConstCode.staticResourcePath + userVO.getAvatar());
+        UserAuthVO authVO = userAuthService.getByUserId(id);
+        userVO.setUserAuth(authVO);
+        return userVO;
     }
 }

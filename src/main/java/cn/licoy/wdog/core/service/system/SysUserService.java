@@ -8,6 +8,7 @@ import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.SysResource;
 import cn.licoy.wdog.core.entity.system.SysRole;
 import cn.licoy.wdog.core.entity.system.SysUser;
+import cn.licoy.wdog.core.vo.system.ClientSysUserVO;
 import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
@@ -27,6 +28,11 @@ public interface SysUserService extends IService<SysUser> {
      * 获取活动管理员(id,username,realName)
      */
     List<SimpleUserVO> findAllSimpleVOByActiId(String actiId);
+
+    /**
+     *  获取未认证用户
+     */
+    List<SimpleUserVO> unauthList();
 
     /**
      * 根据用户名查找用户
@@ -83,20 +89,6 @@ public interface SysUserService extends IService<SysUser> {
     void statusChange(String userId, Integer status);
 
     /**
-     * 删除用户
-     * @param userId 用户ID
-     */
-    void removeUser(String userId);
-
-    /**
-     * 添加用户
-     * @param addDTO 用户数据DTO
-     */
-    void add(UserAddDTO addDTO);
-
-
-
-    /**
      * 更新用户数据
      * @param id 用户id
      * @param updateDTO 用户数据DTO
@@ -117,12 +109,31 @@ public interface SysUserService extends IService<SysUser> {
     void resetPassword(ResetPasswordDTO resetPasswordDTO);
 
     /**
-     * 是否存在
+     * 用户是否存在
      */
     Boolean isExist(String id);
 
     /**
-     *
+     * 删除用户
+     * @param userId 用户ID
      */
-    List<SimpleUserVO> unauthList();
+    void removeUser(String userId);
+
+    /**
+     * 添加用户
+     * @param addDTO 用户数据DTO
+     */
+    void add(UserAddDTO addDTO);
+
+    /**********************************************************************************************
+     *
+     *                                      ** 客户端接口 **
+     *
+     **********************************************************************************************/
+
+    /**
+     * 获取用户数据
+     * @return
+     */
+    ClientSysUserVO getUserDataById(String id);
 }

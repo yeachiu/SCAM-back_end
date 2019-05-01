@@ -13,7 +13,10 @@ import java.util.List;
 @Repository
 public interface ActivityLimitMapper extends BaseMapper<ActivityLimit>  {
 
-    @Select("SELECT g.`name`, g.id FROM activity_limit al, a_group g WHERE al.gid = g.id AND al.aid =  #{actiId};")
+    @Select("SELECT g.`name` AS title, g.id FROM activity_limit al, a_group g WHERE al.gid = g.id AND al.aid =  #{actiId};")
     List<SimpleGroupVO> findLimitByActiId(String actiId);
+
+    @Select("SELECT aid FROM activity_limit l, activity a WHERE a.id = l.aid AND a.`status` > 1 and gid = #{groupId}")
+    List<String> findActiIdsByGroupId(String groupId);
 	
 }

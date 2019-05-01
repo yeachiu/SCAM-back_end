@@ -15,14 +15,12 @@ public interface SysUserAuthService extends IService<SysUserAuth> {
 
     /**
      * 学生用户信息列表（不分页）
-     *
      * @return
      */
     List<UserAuthVO> alreadyList();
 
     /**
      * 学生信息列表
-     *
      * @return
      */
     Page<UserAuthVO> alreadyList(FindUserAuthDTO dto);
@@ -44,12 +42,19 @@ public interface SysUserAuthService extends IService<SysUserAuth> {
     List<UserAuthVO> alreadyListExMember();
 
     /**
-     * 获取用户信息
-     *
+     * 根据认证ID获取VO
      * @param id
      * @return
      */
     UserAuthVO getById(String id);
+
+    /**
+     * 根据用户ID获取VO
+     * @param uid
+     * @return
+     */
+    UserAuthVO getByUserId(String uid);
+
 
     /***************************************************************************/
 
@@ -93,5 +98,15 @@ public interface SysUserAuthService extends IService<SysUserAuth> {
      */
     void add(UserAuthAddDTO addDTO);
 
+    /**
+     * 管理员添加认证记录
+     * @param addDTO
+     */
     void addByAdmin(UserAuthAddByAdminDTO addDTO);
+
+    /**
+     * 获取学生所在分组
+     */
+    String getGroupIdByUserId(String userId);
+
 }

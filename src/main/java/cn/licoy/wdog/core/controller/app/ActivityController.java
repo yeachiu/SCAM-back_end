@@ -44,6 +44,14 @@ public class ActivityController {
         return ResponseResult.e(ResponseCode.OK);
     }
 
+    @PostMapping(value = {"/get/{id}"})
+    @ApiOperation(value = "分页获取部门活动数据")
+    @SysLogs("分页获取活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getByAparId(@PathVariable("id") String id){
+        return ResponseResult.e(ResponseCode.OK,activityService.getById(id));
+    }
+
     @PostMapping(value = {"/list"})
     @ApiOperation(value = "分页获取活动数据")
     @SysLogs("分页获取活动数据")
@@ -84,5 +92,43 @@ public class ActivityController {
     public ResponseResult statusChange(@PathVariable(value = "id") String id){
         this.activityService.remove(id);
         return ResponseResult.e(ResponseCode.OK);
+    }
+
+    /******************************************************************************************************
+     *
+     *   ***  客户端请求 ***
+     *
+     ******************************************************************************************************/
+
+    @PostMapping(value = {"/get/list"})
+    @ApiOperation(value = "获取所有有效活动数据")
+    @SysLogs("获取所有有效活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult list(){
+        return ResponseResult.e(ResponseCode.OK,activityService.getAllEffectiveActivity());
+    }
+
+    @PostMapping(value = {"/get/list/userId/{userId}"})
+    @ApiOperation(value = "获取用户权限下所有活动数据")
+    @SysLogs("获取用户权限下所有活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getAllByUserId(@PathVariable("userId") String userId){
+        return ResponseResult.e(ResponseCode.OK,activityService.getByUserId(userId));
+    }
+
+    @PostMapping(value = {"/get/list/join/userId/{userId}"})
+    @ApiOperation(value = "获取用户参与的所有活动数据")
+    @SysLogs("获取用户参与的所有活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getJoinInByUserId(@PathVariable("userId") String userId){
+        return ResponseResult.e(ResponseCode.OK,activityService.getJoinInByUserId(userId));
+    }
+
+    @PostMapping(value = {"/get/list/focus/userId/{userId}"})
+    @ApiOperation(value = "获取用户关注的所有活动数据")
+    @SysLogs("获取用户参与的所有活动数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getFocusByUserId(@PathVariable("userId") String userId){
+        return ResponseResult.e(ResponseCode.OK,activityService.getFocusByUserId(userId));
     }
 }
