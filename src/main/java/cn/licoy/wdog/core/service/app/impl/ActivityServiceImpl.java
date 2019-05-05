@@ -10,7 +10,7 @@ import cn.licoy.wdog.core.entity.app.*;
 import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.app.ActivityMapper;
 import cn.licoy.wdog.core.service.app.*;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.*;
 import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
@@ -39,7 +39,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
     @Autowired
     private SysUserService userService;
     @Autowired
-    private SysUserAuthService userAuthService;
+    private UserAuthService userAuthService;
     @Autowired
     private ActivityAdminsService adminsService;
     @Autowired
@@ -297,8 +297,11 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         acti.setOrganizer(simpleApartmentVO);
         //获取当前报名人数
         acti.setMemberNow(activityMemberService.getSignupNumByActiId(acti.getId()));
-
-
+        //获取表单规则
+        ActivityForm activityForm = formService.getByActiId(acti.getId());
+        if (activityForm != null){
+            acti.setRules(activityForm.getRules());
+        }
         return acti;
     }
 

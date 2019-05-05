@@ -45,10 +45,10 @@ public class ActivityController {
     }
 
     @PostMapping(value = {"/get/{id}"})
-    @ApiOperation(value = "分页获取部门活动数据")
-    @SysLogs("分页获取活动数据")
+    @ApiOperation(value = "获取单个活动信息(详细)")
+    @SysLogs("获取单个活动信息(详细)")
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
-    public ResponseResult getByAparId(@PathVariable("id") String id){
+    public ResponseResult getById(@PathVariable("id") String id){
         return ResponseResult.e(ResponseCode.OK,activityService.getById(id));
     }
 

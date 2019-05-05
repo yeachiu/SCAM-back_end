@@ -1,4 +1,4 @@
-package cn.licoy.wdog.core.dto.system.user;
+package cn.licoy.wdog.core.dto.app.student;
 
 import cn.licoy.wdog.core.dto.SplitPageDTO;
 import lombok.Data;

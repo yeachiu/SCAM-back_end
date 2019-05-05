@@ -5,6 +5,7 @@ import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
+import cn.licoy.wdog.core.dto.app.group.FindClazzDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.app.ActivityLimit;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
@@ -73,7 +74,7 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
      */
     @Override
     public List<GroupSelectVO> findBydictIdAndPeriod(FindClazzDTO findClazzDTO) {
-        return mapper.listByDictIdAndPeriod(findClazzDTO.getProfessionId(),findClazzDTO.getPeriod());
+        return mapper.listByDictIdAndPeriod(findClazzDTO.getDictId(),findClazzDTO.getPeriod());
     }
 
     /**

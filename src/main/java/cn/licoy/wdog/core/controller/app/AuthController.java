@@ -1,13 +1,13 @@
-package cn.licoy.wdog.core.controller.system;
+package cn.licoy.wdog.core.controller.app;
 
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
-import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
+import cn.licoy.wdog.core.dto.app.student.FindUserAuthDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddByAdminDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthReviewDTO;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -18,17 +18,16 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(value = {"/system/user/auth"})
+@RequestMapping(value = {"/student/auth"})
 @Api(tags = {"用户管理"})
-public class UserAuthController {
+public class AuthController {
 
     @Autowired
-    private SysUserAuthService userAuthService;
+    private UserAuthService userAuthService;
 
     @PostMapping(value = {"/add"})
     @ApiOperation(value = ("学生认证"))
     @SysLogs("学生身份认证")
-    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult add(@RequestBody @Validated @ApiParam(value = "学生认证数据") UserAuthAddDTO authDTO){
         userAuthService.studentAuth(authDTO);
         return ResponseResult.e(ResponseCode.OK);

@@ -54,7 +54,6 @@ public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,Sy
 
     @Override
     public List<DictionaryVO> listByCode(String dictCode) {
-
         List<DictionaryVO> dictVO = mapper.findByDictCode(dictCode);
         if (dictVO != null && dictVO.size() > 0){
             dictVO.forEach(this::findAllVOChild);

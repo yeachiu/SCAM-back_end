@@ -7,7 +7,7 @@ import cn.licoy.wdog.core.entity.app.Apartment;
 import cn.licoy.wdog.core.mapper.app.ApartmentMapper;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ApartmentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
@@ -29,7 +29,7 @@ import java.util.List;
 public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment> implements ApartmentService{
 
     @Autowired
-    private SysUserAuthService authService;
+    private UserAuthService authService;
     @Autowired
     private SysUserService userService;
     @Autowired

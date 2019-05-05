@@ -13,6 +13,7 @@ import cn.licoy.wdog.core.dto.system.user.UserAddDTO;
 import cn.licoy.wdog.core.dto.system.user.UserUpdateDTO;
 import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.system.SysUserMapper;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.*;
 import cn.licoy.wdog.core.vo.system.ClientSysUserVO;
@@ -46,7 +47,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
     @Autowired
     private SysResourceService resourceService;
     @Autowired
-    private SysUserAuthService userAuthService;
+    private UserAuthService userAuthService;
     @Autowired
     private SysUserMapper mapper;
 

@@ -17,6 +17,6 @@ public interface StudentMapper extends BaseMapper<Student>  {
     List<Student> excludeAparAdmin();
 
     @Select("SELECT * FROM student s WHERE s.id NOT IN "+
-            "(SELECT stu_id FROM sys_user_auth)")
+            "(SELECT stu_id FROM user_auth)")
     List<Student> unauthList();
 }

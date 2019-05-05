@@ -1,4 +1,4 @@
-package cn.licoy.wdog.core.entity.system;
+package cn.licoy.wdog.core.entity.app;
 
 
 import cn.licoy.wdog.core.entity.Schema;
@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserAuth implements Serializable {
+public class UserAuth implements Serializable {
 
 
     @TableId

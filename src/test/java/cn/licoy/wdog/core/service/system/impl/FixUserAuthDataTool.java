@@ -3,9 +3,9 @@ package cn.licoy.wdog.core.service.system.impl;
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
-import cn.licoy.wdog.core.entity.system.SysUserAuth;
+import cn.licoy.wdog.core.entity.app.UserAuth;
 import cn.licoy.wdog.core.service.app.AGroupService;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,16 +25,16 @@ import java.util.List;
 public class FixUserAuthDataTool {
 
     @Autowired
-    private SysUserAuthService authService;
+    private UserAuthService authService;
     @Autowired
     private AGroupService groupService;
 
     @Test
     public void runThis(){
-        List<SysUserAuth> userlist = authService.selectList(new EntityWrapper<SysUserAuth>()
+        List<UserAuth> userlist = authService.selectList(new EntityWrapper<UserAuth>()
             .eq("status",ConstCode.USER_AUTH_ALREADY));
         AGroup group = new AGroup();
-        for(SysUserAuth user : userlist){
+        for(UserAuth user : userlist){
             EntityWrapper wrapper = new EntityWrapper();
             wrapper.eq("dict_id",user.getDictId()).and()
                     .eq("period",user.getPeriod()).and()

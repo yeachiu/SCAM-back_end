@@ -1,8 +1,10 @@
-package cn.licoy.wdog.core.dto.system.user;
+package cn.licoy.wdog.core.dto.app.student;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class UserAuthAddDTO {
@@ -17,12 +19,12 @@ public class UserAuthAddDTO {
     @Length(min = 13,max = 13,message = "学号长度应为{min}到 {max}")
     private String stuNum;
 
-    @NotBlank(message = "年级不能为空")
+    @NotNull(message = "年级不能为空")
     private Integer period;
 
     @NotBlank(message = "班级不能为空")
-    private Integer whatClass;
+    private String className;
 
     @NotBlank(message = "专业不能为空")
-    private String dictId;
+    private String profession;
 }

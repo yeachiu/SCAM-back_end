@@ -55,6 +55,7 @@ public class ActivityVO {
     /** 主办方 **/
     private SimpleApartmentVO organizer;
 
-
+    /** 表单规则 **/
+    private String rules;
 
 }

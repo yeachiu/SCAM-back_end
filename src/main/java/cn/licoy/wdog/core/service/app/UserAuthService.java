@@ -1,17 +1,17 @@
-package cn.licoy.wdog.core.service.system;
+package cn.licoy.wdog.core.service.app;
 
-import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
-import cn.licoy.wdog.core.entity.system.SysUserAuth;
+import cn.licoy.wdog.core.dto.app.student.FindUserAuthDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddByAdminDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthReviewDTO;
+import cn.licoy.wdog.core.entity.app.UserAuth;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
 
-public interface SysUserAuthService extends IService<SysUserAuth> {
+public interface UserAuthService extends IService<UserAuth> {
 
     /**
      * 学生用户信息列表（不分页）

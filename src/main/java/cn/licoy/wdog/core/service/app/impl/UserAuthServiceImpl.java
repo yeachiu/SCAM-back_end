@@ -1,22 +1,24 @@
-package cn.licoy.wdog.core.service.system.impl;
+package cn.licoy.wdog.core.service.app.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
-import cn.licoy.wdog.core.dto.system.user.FindUserAuthDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddByAdminDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthAddDTO;
-import cn.licoy.wdog.core.dto.system.user.UserAuthReviewDTO;
+import cn.licoy.wdog.core.dto.app.student.FindUserAuthDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddByAdminDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthAddDTO;
+import cn.licoy.wdog.core.dto.app.student.UserAuthReviewDTO;
+import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.app.Student;
+import cn.licoy.wdog.core.entity.app.UserAuth;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
-import cn.licoy.wdog.core.entity.system.SysUserAuth;
-import cn.licoy.wdog.core.mapper.system.SysUserAuthMapper;
+import cn.licoy.wdog.core.mapper.app.UserAuthMapper;
+import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.StudentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import cn.licoy.wdog.core.service.app.StudentService;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -29,9 +31,10 @@ import java.util.*;
 
 @Service
 @Transactional
-public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUserAuth> implements SysUserAuthService{
+public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> implements UserAuthService{
 
-
+    @Autowired
+    private AGroupService groupService;
     @Autowired
     private StudentService studentService;
     @Autowired
@@ -39,14 +42,17 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     @Autowired
     private SysUserService userService;
     @Autowired
-    private SysUserAuthMapper mapper;
+    private UserAuthMapper mapper;
 
 
     /** "认证中"状态的认证列表 **/
     @Override
     public Page<UserAuthVO> inauthList(FindUserAuthDTO dto) {
         Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
-        userAuthVOPage.setRecords(mapper.inauthList());
+        List<UserAuthVO> voList = new ArrayList<>();
+        List<UserAuth> list = this.selectList(new EntityWrapper<UserAuth>().eq("status",1).orderBy("create_time"));
+        voList = userAuthToVO(list);
+        userAuthVOPage.setRecords(voList);
         return userAuthVOPage;
     }
 
@@ -54,16 +60,21 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     @Override
     public Page<UserAuthVO> list(FindUserAuthDTO dto) {
         Page<UserAuthVO> userAuthVOPage = new Page<UserAuthVO>(dto.getPage(),dto.getPageSize());
-        userAuthVOPage.setRecords(mapper.list());
+        List<UserAuthVO> voList = new ArrayList<>();
+        List<UserAuth> list = this.selectList(new EntityWrapper<UserAuth>().orderBy("create_time"));
+        voList = userAuthToVO(list);
+        userAuthVOPage.setRecords(voList);
         return userAuthVOPage;
     }
 
     /** "已认证"状态的认证列表 **/
     @Override
     public List<UserAuthVO> alreadyList() {
-        List<UserAuthVO> userAuthVOList = mapper.alreadyList();
-        if (userAuthVOList == null)   return null;
-        return userAuthVOList;
+
+        List<UserAuthVO> voList = new ArrayList<>();
+        List<UserAuth> list = this.selectList(new EntityWrapper<UserAuth>().eq("status",2).orderBy("create_time"));
+        voList = userAuthToVO(list);
+        return voList;
     }
 
     /** "已认证"状态的认证列表(分页) **/
@@ -101,7 +112,22 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     /** 根据用户ID获取认证信息 **/
     @Override
     public UserAuthVO getByUserId(String uid) {
-        return mapper.getByUserId(uid);
+        UserAuth userAuth = this.selectOne(new EntityWrapper<UserAuth>().eq("uid",uid));
+        UserAuthVO vo = new UserAuthVO();
+        if(userAuth != null){
+            BeanUtils.copyProperties(userAuth,vo);
+            if (userAuth.getGroupId() != null && !userAuth.getGroupId().equals("")){
+                AGroup group = groupService.selectById(userAuth.getGroupId());
+                if (group != null)
+                    vo.setClassName(group.getName());
+            }
+            SysDictionary dict = dictionaryService.selectById(userAuth.getDictId());
+            if (dict != null){
+                vo.setProfession(dict.getDictName());
+            }
+        }
+
+        return vo;
     }
 
     /**************************************************************************************************/
@@ -109,7 +135,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
     @Override
     public Integer selectAuthStatusByUid(String uid) {
 
-        List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
+        List<UserAuth> userAuths = this.selectList(new EntityWrapper<UserAuth>()
                 .eq("uid",uid));
         if (userAuths.isEmpty() || userAuths.size() > 0){
             return ConstCode.USER_AUTH_UNAUTH;
@@ -117,9 +143,10 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         return userAuths.get(0).getStatus();
     }
 
+    /** 用户取消认证 **/
     @Override
     public void cancelStudentAuth(String authId) {
-        SysUserAuth userAuth = this.selectById(authId);
+        UserAuth userAuth = this.selectById(authId);
         if (userAuth == null){
             throw RequestException.fail("不存在该认证信息");
         }
@@ -130,9 +157,10 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         }
     }
 
+    /** 人工审核 **/
     @Override
     public void manualReview(UserAuthReviewDTO reviewDTO) {
-        SysUserAuth userAuth = this.selectById(reviewDTO.getId());
+        UserAuth userAuth = this.selectById(reviewDTO.getId());
         if (userAuth == null){
             throw RequestException.fail("不存在该认证信息");
         }
@@ -148,12 +176,13 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         }
     }
 
+    /** 学生认证(系统studentAuth) **/
     @Override
     public void studentAuth(UserAuthAddDTO authdto) {
-        SysUserAuth userAuth = new SysUserAuth();
+        UserAuth userAuth = new UserAuth();
         boolean bool = false;
         // 是否已认证过：数据还未同步；
-        List<SysUserAuth> userAuths = this.selectList(new EntityWrapper<SysUserAuth>()
+        List<UserAuth> userAuths = this.selectList(new EntityWrapper<UserAuth>()
                 .eq("uid",authdto.getUid())
         );
 
@@ -178,45 +207,78 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         if (students == null || students.size() == 0){
             //转人工认证
             BeanUtils.copyProperties(authdto,userAuth);
+            userAuth.setDictId(authdto.getProfession());
+            AGroup group = groupService.selectById(authdto.getClassName());
+            if(group!= null){
+                userAuth.setWhatClass(group.getWhatClass());
+                userAuth.setGroupId(group.getId());
+            }
             userAuth.setStatus(ConstCode.USER_AUTH_INAUTH);
             if (bool){
+                userAuth.setModifyTime(new Date());
+                userAuth.setModifyUser(userService.getCurrentUser().getId());
                 this.updateById(userAuth);
             }else{
+                userAuth.setCreateTime(new Date());
+                userAuth.setCreateUser(userService.getCurrentUser().getId());
                 this.insert(userAuth);
             }
 
             return;
         }
         //系统认证
-//        Student student = students.get(0);
-//        if (student.getProfession().equals(authdto.getProfession())
-//                && student.getGrade().equals(authdto.getGrade())
-//                && student.getStuClass().equals(authdto.getStuClass())){
-//            BeanUtils.copyProperties(authdto,userAuth);
-//            userAuth.setStatus(ConstCode.USER_AUTH_ALREADY);//认证成功
-//            if (bool){
-//                this.updateById(userAuth);
-//            }else{
-//                this.insert(userAuth);
-//            }
-//            return;
-//        }else{
-//            throw RequestException.fail("认证失败，请检查信息是否正确");
-//        }
+        Student student = students.get(0);
+        if (student.getGroupId().equals(authdto.getClassName())){
+            BeanUtils.copyProperties(authdto,userAuth);
+            userAuth.setStuId(student.getId());
+            userAuth.setDictId(authdto.getProfession());
+            userAuth.setGroupId(authdto.getClassName());
+            AGroup group = groupService.selectById(authdto.getClassName());
+            if(group!= null){
+                userAuth.setWhatClass(group.getWhatClass());
+            }
+            userAuth.setStatus(ConstCode.USER_AUTH_ALREADY);//认证成功
+            if (bool){
+                userAuth.setModifyTime(new Date());
+                userAuth.setModifyUser(userService.getCurrentUser().getId());
+                this.updateById(userAuth);
+            }else{
+                userAuth.setCreateTime(new Date());
+                userAuth.setCreateUser(userService.getCurrentUser().getId());
+                this.insert(userAuth);
+            }
+            return;
+        }else{
+            throw RequestException.fail("认证失败，请检查信息是否正确");
+        }
     }
 
-//    private List<UserAuthVO> userAuthToVO(List<SysUserAuth> userAuths){
-//        List<UserAuthVO> userAuthVOList = new ArrayList<>();
-//        for (SysUserAuth userAuth : userAuths){
-//            UserAuthVO userAuthVO = new UserAuthVO();
-//            BeanUtils.copyProperties(userAuth,);
-//        }
-//    }
+    private List<UserAuthVO> userAuthToVO(List<UserAuth> userAuths){
+        List<UserAuthVO> userAuthVOList = new ArrayList<>();
+        for (UserAuth userAuth : userAuths){
+            UserAuthVO userAuthVO = new UserAuthVO();
+            BeanUtils.copyProperties(userAuth,userAuthVO);
+            SysDictionary dictionary = dictionaryService.getDictNode(userAuth.getDictId());
+            if (dictionary != null){
+                userAuthVO.setProfession(dictionary.getDictName());
+            }
+            EntityWrapper wrapper = new EntityWrapper();
+            wrapper.eq("dict_id",userAuth.getDictId()).and()
+                    .eq("period",userAuth.getPeriod()).and()
+                    .eq("what_class",userAuth.getWhatClass());
+            AGroup group = groupService.selectOne(wrapper);
+            if(group!= null){
+                userAuthVO.setClassName(group.getName());
+            }
+            userAuthVOList.add(userAuthVO);
+        }
+        return userAuthVOList;
+    }
 
 
     @Override
     public Boolean exist(String id) {
-        SysUserAuth userAuth = this.selectById(id);
+        UserAuth userAuth = this.selectById(id);
         if (userAuth == null)
             return false;
 
@@ -225,7 +287,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 
     @Override
     public void remove(String id) {
-        SysUserAuth userAuth = this.selectById(id);
+        UserAuth userAuth = this.selectById(id);
         if (userAuth == null){
             throw RequestException.fail(String.format("删除失败，不存在ID为%s的认证记录"));
         }
@@ -234,11 +296,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
 
     @Override
     public void add(UserAuthAddDTO addDTO) {
-        SysDictionary dictionary = dictionaryService.selectById(addDTO.getDictId());
-        if (dictionary == null){
-            throw RequestException.fail(String.format("添加失败，不存在ID为%s的专业数据",addDTO.getDictId()));
-        }
-        SysUserAuth userAuth = new SysUserAuth();
+        UserAuth userAuth = new UserAuth();
         BeanUtils.copyProperties(addDTO,userAuth);
         //时间和操作者
         SysUserVO currentUser = userService.getCurrentUser();
@@ -258,7 +316,7 @@ public class SysUserAuthServiceImpl extends ServiceImpl<SysUserAuthMapper,SysUse
         if(!bool)
             throw RequestException.fail("不存在该学生信息");
         StudentVO studentVO = studentService.getById(addDTO.getStuId());
-        SysUserAuth userAuth = new SysUserAuth();
+        UserAuth userAuth = new UserAuth();
         userAuth.setStatus(ConstCode.USER_AUTH_ALREADY);
         userAuth.setDictId(studentVO.getGroupVO().getDictId());
         userAuth.setPeriod(studentVO.getGroupVO().getPeriod());
