@@ -3,11 +3,8 @@ package cn.licoy.wdog.core.controller.app;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
-import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
-import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
-import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
+import cn.licoy.wdog.core.dto.app.activity.*;
 import cn.licoy.wdog.core.service.app.ActivityService;
-import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -66,6 +63,14 @@ public class ActivityController {
     @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
     public ResponseResult getCancel(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") FindActivityDTO findActivityDTO){
         return ResponseResult.e(ResponseCode.OK,activityService.getCancelActivityBySplitPage(findActivityDTO));
+    }
+
+    @PostMapping(value = {"/list/status"})
+    @ApiOperation(value = "分页获取回收站数据")
+    @SysLogs("分页获取回收站数据")
+    @ApiImplicitParam(paramType = "header",name = "Authorization",value = "身份认证Token")
+    public ResponseResult getSimpleList(@RequestBody @Validated @ApiParam(value = "活动获取过滤条件") SimpleActivityDTO dto){
+        return ResponseResult.e(ResponseCode.OK,activityService.getSimpleListByStatus(dto));
     }
 
     @PostMapping(value = {"/list/aparId"})

@@ -15,7 +15,7 @@ import java.util.List;
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     @Select("SELECT m.apar_id FROM sys_user u, user_auth a, apartment_member m " +
-            "WHERE u.id = a.uid AND a.id = m.uid AND u.id = #{id}")
+            "WHERE u.id = a.uid AND a.uid = m.uid AND u.id = #{id}")
     String getAparIdById(String id);
 
     @Select("SELECT a.stu_id FROM sys_user u, user_auth a " +

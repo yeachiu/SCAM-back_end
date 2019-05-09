@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,ActivityAdmins> implements ActivityAdminsService{
+public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,ActivityAdmins> implements ActivityAdminsService {
 
     @Autowired
     private ActivityService activityService;
@@ -31,13 +31,17 @@ public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,
     public List<ActivityAbstractVO> findActiAbstractByAdminId(String uid) {
         List<ActivityAbstractVO> activityAbstractVOList = new ArrayList<>();
         List<ActivityAdmins> activityAdminses = this.selectList(new EntityWrapper<ActivityAdmins>()
-                .eq("user_id",uid));
-        if (activityAdminses != null && activityAdminses.size()>0){
-            for (ActivityAdmins actiAdmin: activityAdminses) {
-                ActivityAbstractVO abstractVO = activityService.getAbstractById(actiAdmin.getActivityId());
-                if (abstractVO != null){
-                    activityAbstractVOList.add(abstractVO);
+                .eq("user_id", uid));
+        if (activityAdminses != null && activityAdminses.size() > 0) {
+            for (ActivityAdmins actiAdmin : activityAdminses) {
+                boolean bool = activityService.isEffective(actiAdmin.getActivityId());
+                if(bool){
+                    ActivityAbstractVO abstractVO = activityService.getAbstractById(actiAdmin.getActivityId());
+                    if (abstractVO != null) {
+                        activityAbstractVOList.add(abstractVO);
+                    }
                 }
+
             }
         }
         return activityAbstractVOList;
@@ -54,20 +58,20 @@ public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,
         List<ActivityAdmins> unchangelist = new ArrayList<>();
         List<ActivityAdmins> newlist = new ArrayList<>();
         // 根据活动ID获取原有数据
-        List<ActivityAdmins> oldlist = this.selectList(new EntityWrapper<ActivityAdmins>().eq("activity_id",actiId));
+        List<ActivityAdmins> oldlist = this.selectList(new EntityWrapper<ActivityAdmins>().eq("activity_id", actiId));
         // 读取数据并转换
-        if (!otherAdmin.equals("")){
+        if (!otherAdmin.equals("")) {
             //字符串转数组
             String[] adminIds = otherAdmin.split(",");
             SysUser user = null;
-            for (String uid:adminIds) {
+            for (String uid : adminIds) {
                 // 未改变的管理员
                 ActivityAdmins admin = this.selectOne(new EntityWrapper<ActivityAdmins>()
-                        .eq("activity_id",actiId).and()
-                        .eq("user_id",uid));
-                if (admin != null){
+                        .eq("activity_id", actiId).and()
+                        .eq("user_id", uid));
+                if (admin != null) {
                     unchangelist.add(admin);
-                }else{  //新增的管理员
+                } else {  //新增的管理员
                     admin = new ActivityAdmins();
                     admin.setUserId(uid);
                     admin.setActivityId(actiId);
@@ -80,13 +84,37 @@ public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,
             oldlist.removeAll(unchangelist);
 
             // 执行更新操作
-            if (newlist != null && newlist.size()>0){
+            if (newlist != null && newlist.size() > 0) {
                 this.insertBatch(newlist);
             }
-            if (oldlist != null && oldlist.size()>0){
-                this.deleteBatchIds(oldlist);
+            if (oldlist != null && oldlist.size() > 0) {
+                if (oldlist.size() > 1) {
+                    this.deleteBatchIds(oldlist);
+                } else {
+                    this.deleteById(oldlist.get(0));
+                }
+
             }
         }
-    }
-}
+        if (oldlist != null && oldlist.size() > 0) {
+            if (oldlist.size() > 1) {
+                this.deleteBatchIds(oldlist);
+            } else {
+                this.deleteById(oldlist.get(0));
+            }
 
+        }
+
+    }
+
+    /**
+     * 清除无效活动数据
+     *
+     * @param actiId
+     */
+    @Override
+    public void removeAllByActiId(String actiId) {
+        this.delete(new EntityWrapper<ActivityAdmins>().eq("activity_id",actiId));
+    }
+
+}

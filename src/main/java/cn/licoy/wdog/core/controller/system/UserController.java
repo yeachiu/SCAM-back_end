@@ -4,7 +4,6 @@ import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.core.dto.system.user.*;
-import cn.licoy.wdog.core.service.system.SysUserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

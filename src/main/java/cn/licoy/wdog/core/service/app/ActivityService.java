@@ -1,12 +1,10 @@
 package cn.licoy.wdog.core.service.app;
 
-import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
-import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
+import cn.licoy.wdog.core.dto.app.activity.*;
 import cn.licoy.wdog.core.entity.app.Activity;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
-import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
-import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
+import cn.licoy.wdog.core.vo.app.SimpleActivityVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -67,6 +65,11 @@ public interface ActivityService extends IService<Activity> {
     Boolean isExistActivity(String id);
 
     /**
+     * 活动是否有效(结束或删除)
+     */
+    Boolean isEffective(String id);
+
+    /**
      * 获取用户权限下所有活动信息
      * @param userId
      * @return
@@ -92,4 +95,9 @@ public interface ActivityService extends IService<Activity> {
      * @return
      */
     List<ActivityAbstractVO> getAllEffectiveActivity();
+
+    /**
+     * 根据活动状态获取数据
+     */
+    List<SimpleActivityVO> getSimpleListByStatus(SimpleActivityDTO dto);
 }

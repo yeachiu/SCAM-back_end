@@ -24,7 +24,7 @@ public class ApartmentMemberController {
     private ApartmentService apartmentService;
 
     @PostMapping(value = {"/list/{id}"})
-    @ApiOperation(value = "获取部门列表")
+    @ApiOperation(value = "获取部门成员列表")
     @SysLogs("获取部门成员列表")
     public ResponseResult list(@PathVariable @ApiParam(value = "部门ID") String id){
         return ResponseResult.e(ResponseCode.OK,memberService.list(id));

@@ -89,6 +89,13 @@ public interface UserAuthService extends IService<UserAuth> {
     Boolean exist(String id);
 
     /**
+     * 根据用户ID判断是否存在
+     * @param uid
+     * @return
+     */
+    Boolean existByUid(String uid);
+
+    /**
      * 删除
      */
     void remove(String id);

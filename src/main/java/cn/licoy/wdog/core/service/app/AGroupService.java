@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface AGroupService extends IService<AGroup> {
 
+
+
     /**
      * 获取分组列表
      * @return
@@ -76,6 +78,12 @@ public interface AGroupService extends IService<AGroup> {
      * @return
      */
     List<GroupSelectVO> findAllProfession();
+
+    /**
+     * 获取所有班级分组
+     * @return
+     */
+    List<GroupSelectVO> findAllClass();
 
     /**
      * 根据dictId&period获取分组

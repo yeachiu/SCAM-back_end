@@ -10,16 +10,19 @@ import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.entity.app.UserAuth;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
+import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.app.UserAuthMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
+import cn.licoy.wdog.core.service.system.SysUserRoleService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.StudentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
 import cn.licoy.wdog.core.service.app.StudentService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +44,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
     private SysDictionaryService dictionaryService;
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private SysUserRoleService userRoleService;
     @Autowired
     private UserAuthMapper mapper;
 
@@ -151,7 +156,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
             throw RequestException.fail("不存在该认证信息");
         }
         if (userAuth.getStatus().equals(ConstCode.USER_AUTH_INAUTH)){
-           this.deleteById(authId);
+            userRoleService.remove(userAuth.getUid(),ConstCode.AUTH_USER);
+            this.deleteById(authId);
         }else{
             throw RequestException.fail("操作失败");
         }
@@ -222,6 +228,12 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
                 userAuth.setCreateTime(new Date());
                 userAuth.setCreateUser(userService.getCurrentUser().getId());
                 this.insert(userAuth);
+                //为用户设置角色
+                SysUserRole userRole = new SysUserRole();
+                userRole.setRid(ConstCode.AUTH_USER);
+                userRole.setUid(userAuth.getUid());
+                userRoleService.add(userRole);
+
             }
 
             return;
@@ -246,6 +258,11 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
                 userAuth.setCreateTime(new Date());
                 userAuth.setCreateUser(userService.getCurrentUser().getId());
                 this.insert(userAuth);
+                //为用户设置角色
+                SysUserRole userRole = new SysUserRole();
+                userRole.setRid(ConstCode.AUTH_USER);
+                userRole.setUid(userAuth.getUid());
+                userRoleService.add(userRole);
             }
             return;
         }else{
@@ -275,10 +292,18 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
         return userAuthVOList;
     }
 
-
     @Override
     public Boolean exist(String id) {
         UserAuth userAuth = this.selectById(id);
+        if (userAuth == null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public Boolean existByUid(String uid) {
+        UserAuth userAuth = this.selectOne(new EntityWrapper<UserAuth>().eq("uid",uid));
         if (userAuth == null)
             return false;
 
@@ -291,6 +316,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
         if (userAuth == null){
             throw RequestException.fail(String.format("删除失败，不存在ID为%s的认证记录"));
         }
+        // 移除权限（角色）
+        userRoleService.remove(userAuth.getUid(),ConstCode.AUTH_USER);
         this.deleteById(id);
     }
 
@@ -305,6 +332,11 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
         userAuth.setCreateTime(new Date());
         userAuth.setCreateUser(currentUser.getId());
         this.insert(userAuth);
+        //为用户设置角色
+        SysUserRole userRole = new SysUserRole();
+        userRole.setRid(ConstCode.AUTH_USER);
+        userRole.setUid(userAuth.getUid());
+        userRoleService.add(userRole);
     }
 
     @Override
@@ -332,6 +364,11 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> im
         userAuth.setCreateTime(new Date());
         userAuth.setCreateUser(currentUser.getId());
         this.insert(userAuth);
+        //为用户设置角色
+        SysUserRole userRole = new SysUserRole();
+        userRole.setRid(ConstCode.AUTH_USER);
+        userRole.setUid(userAuth.getUid());
+        userRoleService.add(userRole);
     }
 
     /**

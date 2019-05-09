@@ -19,4 +19,10 @@ public interface ActivityAdminsService extends IService<ActivityAdmins> {
      * @param otherAdmin
      */
     void updateByActiId(String actiId, String otherAdmin);
+
+    /**
+     * 清除无效活动数据
+     * @param actiId
+     */
+    void removeAllByActiId(String actiId);
 }

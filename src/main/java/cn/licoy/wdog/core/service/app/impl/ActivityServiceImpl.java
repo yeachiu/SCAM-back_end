@@ -4,8 +4,7 @@ import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.common.util.StringUtils;
 import cn.licoy.wdog.common.util.Tools;
-import cn.licoy.wdog.core.dto.app.activity.ActivityAddDTO;
-import cn.licoy.wdog.core.dto.app.activity.ActivityUpdateDTO;
+import cn.licoy.wdog.core.dto.app.activity.*;
 import cn.licoy.wdog.core.entity.app.*;
 import cn.licoy.wdog.core.entity.system.*;
 import cn.licoy.wdog.core.mapper.app.ActivityMapper;
@@ -13,8 +12,6 @@ import cn.licoy.wdog.core.service.app.*;
 import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.*;
-import cn.licoy.wdog.core.dto.app.activity.FindActivityDTO;
-import cn.licoy.wdog.core.dto.app.activity.StatusChangeDTO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.alibaba.fastjson.JSONArray;
@@ -31,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 @Service
 @Transactional
@@ -98,6 +97,26 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         return activitiesPage;
     }
 
+    /**
+     * 根据活动状态获取数据
+     */
+    @Override
+    public List<SimpleActivityVO> getSimpleListByStatus(SimpleActivityDTO dto) {
+        //校验
+        Boolean exist = apartmentService.existApartment(dto.getAparId());
+        if(!exist) throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门",dto.getAparId()));
+        List<SimpleActivityVO> list = new ArrayList<>();
+        List<Activity> activities = this.selectList(new EntityWrapper<Activity>().eq("organizer_id",dto.getAparId()).and().eq("status",dto.getStatus()));
+        for(Activity acti : activities){
+            SimpleActivityVO vo = new SimpleActivityVO();
+            vo.setId(acti.getId());
+            vo.setTitle(acti.getTitle());
+            list.add(vo);
+        }
+
+        return list;
+
+    }
 
     /**
      * 添加活动
@@ -220,6 +239,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
         }
+        adminsService.removeAllByActiId(id);
         this.deleteById(id);
     }
 
@@ -277,6 +297,24 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         return true;
     }
 
+    /**
+     * 活动是否有效(结束或删除)
+     *
+     * @param id
+     */
+    @Override
+    public Boolean isEffective(String id) {
+        Activity activity = this.selectById(id);
+        if (activity == null){
+            return false;
+        }
+        int status = activity.getStatus();
+        if(status == ConstCode.ACT_STATUS_DONE || status == ConstCode.ACT_STATUS_CANCEL ){
+            return false;
+        }
+        return true;
+    }
+
     private ActivityVO changeToVO(ActivityVO acti){
 
         acti.setPictureUrl(ConstCode.staticResourcePath + acti.getPictureUrl());
@@ -321,6 +359,10 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         Activity activity = this.selectById(id);
         if (activity == null){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的活动数据",id));
+        }
+        if (activity.getStatus().equals(ConstCode.ACT_STATUS_CANCEL)
+                || activity.getStatus().equals(ConstCode.ACT_STATUS_DRAFT) ){
+            return null;
         }
         ActivityAbstractVO abstractVO = new ActivityAbstractVO();
         BeanUtils.copyProperties(activity,abstractVO);
@@ -378,7 +420,9 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         List<ActivityAbstractVO> list = new ArrayList<>();
         for (String actiId:actiIds ) {
             ActivityAbstractVO abstractVO = this.getAbstractById(actiId);
-            if (abstractVO != null){
+            if (abstractVO != null
+                    && !abstractVO.getStatus().equals(ConstCode.ACT_STATUS_CANCEL)
+                    && !abstractVO.getStatus().equals(ConstCode.ACT_STATUS_DRAFT) ){
                 list.add(abstractVO);
             }
         }
@@ -409,7 +453,9 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         List<ActivityAbstractVO> list = new ArrayList<>();
         for (String actiId:actiIds ) {
             ActivityAbstractVO abstractVO = this.getAbstractById(actiId);
-            if (abstractVO != null){
+            if (abstractVO != null
+                    && !abstractVO.getStatus().equals(ConstCode.ACT_STATUS_CANCEL)
+                    && !abstractVO.getStatus().equals(ConstCode.ACT_STATUS_DRAFT) ){
                 list.add(abstractVO);
             }
         }

@@ -12,6 +12,10 @@ spring:
     hikari:
       max-lifetime: 1765000
       maximum-pool-size: 15
+  #mongo配置
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/SCAM
   redis:
     host: 127.0.0.1
     port: 6379
@@ -34,6 +38,11 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
     min-response-size: 1024
   port: 1000
+multipart:
+  # Single file max size
+  maxFileSize: 50Mb
+  # All files max size
+  maxRequestSize: 50Mb
 
 
 

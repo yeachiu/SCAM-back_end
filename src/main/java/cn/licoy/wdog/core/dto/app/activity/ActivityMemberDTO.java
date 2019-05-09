@@ -14,4 +14,5 @@ public class ActivityMemberDTO {
     @NotBlank(message = "用户ID不能为空")
     private String uid;	//
 
+    private String signupData;  //用户报名提交的表单数据，为"报名"预留，返回时为空字段
 }

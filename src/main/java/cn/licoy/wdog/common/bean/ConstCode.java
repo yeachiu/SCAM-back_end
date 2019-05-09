@@ -15,7 +15,8 @@ public class ConstCode {
     public static final Integer ACT_STATUS_DRAFT = 1;   //草稿
     public static final Integer ACT_STATUS_PUBLISH = 2 ;   //已发布
     public static final Integer ACT_STATUS_PROCESS = 3 ;   //进行中
-    public static final Integer ACT_STATUS_COMPLETE = 4;   //已结束
+    public static final Integer ACT_STATUS_COMPLETE = 4;   //已完成
+    public static final Integer ACT_STATUS_DONE = 5; //已结束
     public static final Integer ACT_STATUS_CANCEL = 0 ;   //已取消
 
     /** 分组标识 **/
@@ -34,4 +35,10 @@ public class ConstCode {
     /** 根目录代码 **/
     public static final String PERIOD  = "PERIOD";
     public static final String ROOT = "ROOT";
+
+    /** 系统角色代码 **/
+    public static final String APAR_ADMIN = "1111314161494679553";     // 部门管理员
+    public static final String APAR_MEMBER = "1119210975065563137";    // 部门成员
+    public static final String AUTH_USER = "1123124274928934913";      // 认证用户
+    public static final String USER = "989416986389880834";
 }

@@ -5,11 +5,14 @@ import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.dto.app.apartment.ApartmentMemberDTO;
 import cn.licoy.wdog.core.dto.app.apartment.FindMemberDTO;
 import cn.licoy.wdog.core.entity.app.ApartmentMember;
+import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.app.ApartmentMemberMapper;
 import cn.licoy.wdog.core.service.app.ActivityAdminsService;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
 import cn.licoy.wdog.core.service.app.UserAuthService;
+import cn.licoy.wdog.core.service.system.SysRoleService;
+import cn.licoy.wdog.core.service.system.SysUserRoleService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ApartmentMemberVO;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -41,9 +45,16 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
     @Autowired
     private ActivityAdminsService activityAdminsService;
     @Autowired
+    private SysUserRoleService userRoleService;
+    @Autowired
     private ApartmentMemberMapper mapper;
 
 
+    /**
+     * 添加成员
+     * 为成员添加对应权限角色（部门成员）
+     * @param addDTO
+     */
     @Override
     public void add(ApartmentMemberDTO addDTO) {
         Boolean bool = authService.exist(addDTO.getUid());
@@ -64,6 +75,11 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         member.setCreateTime(new Date());
         member.setCreateUser(currentUser.getId());
         this.insert(member);
+        //为成员设置角色
+        SysUserRole userRole = new SysUserRole();
+        userRole.setRid(ConstCode.APAR_MEMBER);
+        userRole.setUid(member.getUid());
+        userRoleService.add(userRole);
     }
 
     @Override
@@ -73,6 +89,8 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             throw RequestException.fail("删除失败，不存在该关系");
         if (member.getIsadmin().equals(ConstCode.TRUE))
             throw RequestException.fail("该成员为部门管理员，不允许删除");
+        // 移除权限（角色）
+        userRoleService.remove(member.getUid(),ConstCode.APAR_MEMBER);
         this.deleteById(id);
 
     }
@@ -97,7 +115,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         for (ApartmentMember mem: apartmentMembers) {
             ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
             BeanUtils.copyProperties(mem,apartmentMemberVO);
-            UserAuthVO userAuthVO = authService.getById(mem.getUid());
+            UserAuthVO userAuthVO = authService.getByUserId(mem.getUid());
             if (userAuthVO != null)
                 apartmentMemberVO.setMember(userAuthVO);
             List<ActivityAbstractVO> abstractList = activityAdminsService.findActiAbstractByAdminId(mem.getUid());
@@ -120,7 +138,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         ApartmentMemberVO apartmentMemberVO = new ApartmentMemberVO();
         BeanUtils.copyProperties(member,apartmentMemberVO);
         //获取成员身份数据
-        UserAuthVO stu = authService.getById(member.getUid());
+        UserAuthVO stu = authService.getByUserId(member.getUid());
         if (stu != null)
             apartmentMemberVO.setMember(stu);
         //获取成员相关的活动数据
@@ -148,11 +166,16 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         member.setCreateTime(new Date());
         member.setCreateUser(currentUser.getId());
         this.insert(member);
+        //为成员设置角色
+        SysUserRole userRole = new SysUserRole();
+        userRole.setRid(ConstCode.APAR_ADMIN);
+        userRole.setUid(member.getUid());
+        userRoleService.add(userRole);
     }
 
     @Override
     public void updateAdmin(String aparId, String uid) {
-        Boolean bool = authService.exist(uid);
+        Boolean bool = authService.existByUid(uid);
         if (!bool){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",uid));
         }
@@ -172,9 +195,25 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             updateList.add(member);
             updateList.add(oldAdmin);
             this.updateBatchById(updateList);
+            //为成员更新角色
+            SysUserRole userRole = userRoleService.selectOne(new EntityWrapper<SysUserRole>().eq("uid",member.getUid()));
+            if (userRole != null){
+                userRole.setRid(ConstCode.APAR_ADMIN);
+                userRoleService.update(userRole);
+            }
+            userRole = userRoleService.selectOne(new EntityWrapper<SysUserRole>().eq("uid",oldAdmin.getUid()));
+            if (userRole != null){
+                userRole.setRid(ConstCode.APAR_MEMBER);
+                userRoleService.update(userRole);
+            }
 
         }else{
             oldAdmin.setIsadmin(ConstCode.FALSE);
+            SysUserRole userRole = userRoleService.selectOne(new EntityWrapper<SysUserRole>().eq("uid",oldAdmin.getUid()));
+            if (userRole != null){
+                userRole.setRid(ConstCode.APAR_MEMBER);
+                userRoleService.update(userRole);
+            }
             this.updateById(oldAdmin);
             this.addAdmin(aparId,uid);
         }
@@ -186,6 +225,10 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
         Boolean bool = apartmentService.existApartment(aparId);
         if (!bool){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的部门信息",aparId));
+        }
+        List<ApartmentMember> members = this.selectList(new EntityWrapper<ApartmentMember>().eq("apar_id",aparId));
+        for (ApartmentMember mem : members) {
+            userRoleService.removeByUid(mem.getUid());
         }
         this.delete(new EntityWrapper<ApartmentMember>().eq("apar_id",aparId));
     }

@@ -6,6 +6,7 @@ import cn.licoy.wdog.core.entity.app.ActivityMember;
 import cn.licoy.wdog.core.mapper.app.ActivityMemberMapper;
 import cn.licoy.wdog.core.service.app.ActivityMemberService;
 import cn.licoy.wdog.core.service.app.ActivityService;
+import cn.licoy.wdog.core.service.app.SignupFormService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityMemberVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -27,6 +28,8 @@ public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,
     private SysUserService userService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private SignupFormService signupFormService;
 
 
     /**
@@ -81,11 +84,17 @@ public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,
             add.setCreateTime(new Date());
             add.setUid(userService.getCurrentUser().getId());
             this.insert(add);
+            // 添加报名表单数据
+            String signupData = changeDTO.getSignupData();
+            String actiId = add.getActiId();
+            String id = add.getId();
+            signupFormService.add(signupData,actiId,id);
         }else{  //delete
             ActivityMember remove = this.selectById(changeDTO.getId());
             if(remove == null){
                 throw RequestException.fail("取消失败，数据ID不存在");
             }
+            signupFormService.deleteOne(changeDTO.getActiId(),remove.getId());
             this.deleteById(changeDTO.getId());
         }
     }

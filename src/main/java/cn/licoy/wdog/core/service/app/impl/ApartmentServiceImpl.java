@@ -42,7 +42,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         List<Apartment> apartments = this.selectList(new EntityWrapper<Apartment>().orderBy("create_time",findDTO.getAsc()));
         if (apartments != null && apartments.size()>0){
             for (Apartment apar: apartments ) {
-                UserAuthVO apartAdmin = authService.getById(apar.getApartAdmin());
+                UserAuthVO apartAdmin = authService.getByUserId(apar.getApartAdmin());
                 ApartmentVO apartmentVO = new ApartmentVO();
                 BeanUtils.copyProperties(apar,apartmentVO);
                 apartmentVO.setApartAdmin(apartAdmin);
@@ -57,7 +57,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
 
     @Override
     public void add(ApartmentDTO dto) {
-        Boolean existStudent = authService.exist(dto.getApartAdmin());
+        Boolean existStudent = authService.existByUid(dto.getApartAdmin());
         if (!existStudent){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",dto.getApartAdmin()));
         }
@@ -81,7 +81,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         if (apartment == null){
             throw RequestException.fail(String.format("更新失败，不存在ID为%s的部门信息",id));
         }
-        Boolean existStudent = authService.exist(dto.getApartAdmin());
+        Boolean existStudent = authService.existByUid(dto.getApartAdmin());
         if (!existStudent){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",dto.getApartAdmin()));
         }
@@ -122,7 +122,7 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper,Apartment>
         if (apartment == null){
             throw RequestException.fail(String.format("数据获取失败，不存在ID为%s的部门信息",id));
         }
-        UserAuthVO apartAdmin = authService.getById(apartment.getApartAdmin());
+        UserAuthVO apartAdmin = authService.getByUserId(apartment.getApartAdmin());
         ApartmentVO apartmentVO = new ApartmentVO();
         BeanUtils.copyProperties(apartment,apartmentVO);
         apartmentVO.setApartAdmin(apartAdmin);

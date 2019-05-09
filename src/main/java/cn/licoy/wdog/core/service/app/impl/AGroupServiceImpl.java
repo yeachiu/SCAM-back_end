@@ -89,6 +89,25 @@ public class AGroupServiceImpl extends ServiceImpl<AGroupMapper,AGroup> implemen
         return list;
     }
 
+    /**
+     * 获取所有班级分组
+     */
+    @Override
+    public List<GroupSelectVO> findAllClass() {
+        List<GroupSelectVO> list = new ArrayList<>();
+        List<GroupSelectVO> parents = this.mapper.listByRoot();
+        for (GroupSelectVO profession : parents) {
+            List<GroupSelectVO> profPeriod = this.mapper.findChildren(profession.getId());
+            for (GroupSelectVO pp : profPeriod) {
+                List<GroupSelectVO> clazzs = this.mapper.findChildren(pp.getId());
+                list.addAll(clazzs);
+            }
+        }
+
+        return list;
+    }
+
+
     private void getParentIdsByGroup(AGroup group,List<String> list){
         if(group.getParentId() != null){
             list.add(group.getParentId());

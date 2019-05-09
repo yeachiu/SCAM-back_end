@@ -37,6 +37,13 @@ public class GroupController {
         return ResponseResult.e(ResponseCode.OK,groupService.findAllProfession());
     }
 
+    @PostMapping(value = {"/list/class"})
+    @ApiOperation(value = "获取所有专业")
+    @SysLogs("获取所有专业")
+    public ResponseResult findAllClass() {
+        return ResponseResult.e(ResponseCode.OK,groupService.findAllClass());
+    }
+
     @PostMapping(value = {"/list/clazz"})
     @ApiOperation(value = "获取所有专业")
     @SysLogs("获取所有专业")
