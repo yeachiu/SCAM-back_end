@@ -13,6 +13,7 @@ import cn.licoy.wdog.core.entity.system.SysDictionary;
 import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.app.UserAuthMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.app.StudentService;
 import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserRoleService;
@@ -20,9 +21,7 @@ import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.StudentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import cn.licoy.wdog.core.vo.system.UserAuthVO;
-import cn.licoy.wdog.core.service.app.StudentService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +33,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> implements UserAuthService{
+public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper,UserAuth> implements UserAuthService {
 
     @Autowired
     private AGroupService groupService;

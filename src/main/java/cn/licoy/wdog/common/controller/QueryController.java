@@ -1,6 +1,5 @@
 package cn.licoy.wdog.common.controller;
 
-import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.service.QueryService;

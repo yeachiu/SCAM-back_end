@@ -28,8 +28,8 @@ public class Swagger2Config {
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Watch Dog API文档")
-                .description("Watch Dog API文档")
+                .title("SCAM SYSTEM API文档")
+                .description("SCAM SYSTEM API文档")
                 .version("1.0")
                 .build();
     }

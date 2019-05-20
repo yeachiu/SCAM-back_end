@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper
 @Repository
-public interface ActivityLimitMapper extends BaseMapper<ActivityLimit>  {
+public interface ActivityLimitMapper extends BaseMapper<ActivityLimit> {
 
     @Select("SELECT g.`name` AS title, g.id FROM activity_limit al, a_group g WHERE al.gid = g.id AND al.aid =  #{actiId};")
     List<SimpleGroupVO> findLimitByActiId(String actiId);

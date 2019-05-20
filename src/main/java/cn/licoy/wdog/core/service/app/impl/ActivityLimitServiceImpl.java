@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ActivityLimitServiceImpl extends ServiceImpl<ActivityLimitMapper,ActivityLimit> implements ActivityLimitService{
+public class ActivityLimitServiceImpl extends ServiceImpl<ActivityLimitMapper,ActivityLimit> implements ActivityLimitService {
 
     @Autowired
     private ActivityLimitMapper mapper;

@@ -3,12 +3,11 @@ package cn.licoy.wdog.core.service.system.impl;
 import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.dto.system.dictionary.DictionaryDTO;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
-import cn.licoy.wdog.core.mapper.system.SysDictionaryMapper;
-import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.system.DictionaryVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
+import cn.licoy.wdog.core.mapper.system.SysDictionaryMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +19,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,SysDictionary> implements SysDictionaryService{
+public class SysDictionaryServiceImpl extends ServiceImpl<SysDictionaryMapper,SysDictionary> implements SysDictionaryService {
 
 
     @Autowired

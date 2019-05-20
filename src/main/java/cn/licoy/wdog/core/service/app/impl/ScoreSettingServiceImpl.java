@@ -7,7 +7,6 @@ import cn.licoy.wdog.core.mapper.app.ScoreSettingMapper;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.service.app.ScoreSettingService;
 import cn.licoy.wdog.core.service.system.SysUserService;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ScoreSettingServiceImpl extends ServiceImpl<ScoreSettingMapper,ScoreSetting> implements ScoreSettingService{
+public class ScoreSettingServiceImpl extends ServiceImpl<ScoreSettingMapper,ScoreSetting> implements ScoreSettingService {
 
     @Autowired
     private ScoreSettingMapper mapper;

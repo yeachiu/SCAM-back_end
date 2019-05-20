@@ -165,8 +165,9 @@ public class SignupFormServiceImpl implements SignupFormService {
 
         BasicDBObject query = new BasicDBObject("_id",id);
         BasicDBObject object = (BasicDBObject)dbCollection.findOne(query);
-
-        dbCollection.remove(object);
+        if(object != null){
+            dbCollection.remove(object);
+        }
         mongo.close();
 
     }

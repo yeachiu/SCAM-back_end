@@ -4,8 +4,6 @@ package cn.licoy.wdog.core.mongodb;
 
 import cn.licoy.wdog.core.service.system.SysUserService;
 import com.mongodb.*;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

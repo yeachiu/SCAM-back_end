@@ -1,6 +1,5 @@
 package cn.licoy.wdog.core.dto.app.activity;
 
-import cn.licoy.wdog.core.entity.app.ScoreSetting;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;

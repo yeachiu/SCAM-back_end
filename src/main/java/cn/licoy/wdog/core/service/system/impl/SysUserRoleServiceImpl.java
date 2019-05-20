@@ -1,6 +1,5 @@
 package cn.licoy.wdog.core.service.system.impl;
 
-import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.core.entity.system.SysRole;
 import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.system.SysUserRoleMapper;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

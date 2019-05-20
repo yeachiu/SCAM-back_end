@@ -1,11 +1,13 @@
 package cn.licoy.wdog.core.service.system.impl;
 
 import cn.licoy.wdog.common.exception.RequestException;
-import cn.licoy.wdog.common.service.BaseService;
 import cn.licoy.wdog.core.dto.system.role.FindRoleDTO;
 import cn.licoy.wdog.core.dto.system.role.RoleAddDTO;
 import cn.licoy.wdog.core.dto.system.role.RoleUpdateDTO;
-import cn.licoy.wdog.core.entity.system.*;
+import cn.licoy.wdog.core.entity.system.SysResource;
+import cn.licoy.wdog.core.entity.system.SysRole;
+import cn.licoy.wdog.core.entity.system.SysRoleResource;
+import cn.licoy.wdog.core.entity.system.SysUserRole;
 import cn.licoy.wdog.core.mapper.system.SysRoleMapper;
 import cn.licoy.wdog.core.service.global.ShiroService;
 import cn.licoy.wdog.core.service.system.SysRoleResourceService;
@@ -26,7 +28,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper,SysRole> implements SysRoleService{
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper,SysRole> implements SysRoleService {
 
     @Autowired
     private SysRoleResourceService roleResourceService;

@@ -1,22 +1,19 @@
 package cn.licoy.wdog.core.service.app.impl;
 
-import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.core.dto.app.group.AGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.AGroupUpdateDTO;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.dto.app.group.FindClazzDTO;
 import cn.licoy.wdog.core.entity.app.AGroup;
-import cn.licoy.wdog.core.entity.app.ActivityLimit;
 import cn.licoy.wdog.core.entity.system.SysDictionary;
-import cn.licoy.wdog.core.entity.system.SysUser;
 import cn.licoy.wdog.core.mapper.app.AGroupMapper;
 import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.system.SysDictionaryService;
-import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.GroupSelectVO;
 import cn.licoy.wdog.core.vo.app.GroupVO;
-import cn.licoy.wdog.core.vo.system.DictionaryVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;

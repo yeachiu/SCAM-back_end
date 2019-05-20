@@ -1,8 +1,8 @@
 logging:
   level:
     cn:
-      licoy:
-        wdog: debug
+      chiu:
+        scam: debug
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/wdog?useUnicode=yes&characterEncoding=UTF8&useSSL=false

@@ -7,7 +7,6 @@ import cn.licoy.wdog.core.dto.app.apartment.ApartmentDTO;
 import cn.licoy.wdog.core.dto.app.apartment.FindApartmentDTO;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
-import cn.licoy.wdog.core.vo.app.MemberVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -15,9 +14,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = {"/app/apartment"})

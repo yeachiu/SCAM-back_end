@@ -2,20 +2,25 @@ package cn.licoy.wdog.core.service.app.impl;
 
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.common.exception.RequestException;
-import cn.licoy.wdog.common.util.StringUtils;
 import cn.licoy.wdog.common.util.Tools;
-import cn.licoy.wdog.core.dto.app.activity.*;
-import cn.licoy.wdog.core.entity.app.*;
-import cn.licoy.wdog.core.entity.system.*;
-import cn.licoy.wdog.core.mapper.app.ActivityMapper;
-import cn.licoy.wdog.core.service.app.*;
+import cn.licoy.wdog.core.entity.app.AGroup;
+import cn.licoy.wdog.core.entity.app.ScoreSetting;
+import cn.licoy.wdog.core.entity.system.SysUser;
+import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.app.ScoreSettingService;
 import cn.licoy.wdog.core.service.app.UserAuthService;
 import cn.licoy.wdog.core.service.system.SysUserService;
+import cn.licoy.wdog.core.vo.app.ActivityVO;
+import cn.licoy.wdog.core.vo.app.SimpleActivityVO;
+import cn.licoy.wdog.common.util.StringUtils;
+import cn.licoy.wdog.core.dto.app.activity.*;
+import cn.licoy.wdog.core.entity.app.*;
+import cn.licoy.wdog.core.mapper.app.ActivityMapper;
+import cn.licoy.wdog.core.service.app.*;
 import cn.licoy.wdog.core.vo.app.*;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -28,8 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 @Service
 @Transactional
@@ -222,15 +225,18 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper,Activity> im
         }
         SysUserVO currentUser = userService.getCurrentUser();
         BeanUtils.copyProperties(updateDTO,activity);
+        /** 活动管理员 **/
+        adminsService.updateByActiId(activity.getId(),updateDTO.getOtherAdmin());
+        /** 分组限制 **/
+        limitService.updateByActiId(activity.getId(),updateDTO.getGroupId());
+
+        activity.setStatus(ConstCode.ACT_STATUS_DRAFT);
         activity.setPictureUrl(activity.getPictureUrl().replace(ConstCode.staticResourcePath,""));
         activity.setModifyTime(new Date());
         activity.setModifyUser(currentUser.getId());
         this.updateById(activity);
 
-        /** 活动管理员 **/
-        adminsService.updateByActiId(activity.getId(),updateDTO.getOtherAdmin());
-        /** 分组限制 **/
-        limitService.updateByActiId(activity.getId(),updateDTO.getGroupId());
+
     }
 
     @Override

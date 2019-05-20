@@ -1,25 +1,22 @@
 package cn.licoy.wdog.core.service.app.impl;
 
 import cn.licoy.wdog.common.exception.RequestException;
+import cn.licoy.wdog.core.service.app.AGroupService;
+import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.dto.app.group.ExistGroupDTO;
 import cn.licoy.wdog.core.dto.app.student.FindStudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentDTO;
 import cn.licoy.wdog.core.dto.app.student.StudentUpdateDTO;
-import cn.licoy.wdog.core.entity.app.AGroup;
 import cn.licoy.wdog.core.entity.app.Student;
 import cn.licoy.wdog.core.mapper.app.StudentMapper;
-import cn.licoy.wdog.core.service.app.AGroupService;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.StudentService;
-import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.GroupVO;
 import cn.licoy.wdog.core.vo.app.StudentVO;
 import cn.licoy.wdog.core.vo.system.SysUserVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

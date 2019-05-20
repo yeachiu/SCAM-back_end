@@ -1,7 +1,7 @@
 package cn.licoy.wdog.core.mapper.system;
 
+
 import cn.licoy.wdog.core.entity.system.SysUser;
-import cn.licoy.wdog.core.vo.system.NameAndIdVO;
 import cn.licoy.wdog.core.vo.system.SimpleUserVO;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;

@@ -5,8 +5,6 @@ import cn.licoy.wdog.core.dto.system.role.FindRoleDTO;
 import cn.licoy.wdog.core.dto.system.role.RoleAddDTO;
 import cn.licoy.wdog.core.dto.system.role.RoleUpdateDTO;
 import cn.licoy.wdog.core.entity.system.SysRole;
-import cn.licoy.wdog.core.entity.system.SysUser;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;

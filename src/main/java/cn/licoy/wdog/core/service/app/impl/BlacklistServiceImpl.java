@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class BlacklistServiceImpl extends ServiceImpl<BlacklistMapper,Blacklist> implements BlacklistService{
+public class BlacklistServiceImpl extends ServiceImpl<BlacklistMapper,Blacklist> implements BlacklistService {
 	
 }

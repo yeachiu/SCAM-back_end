@@ -1,8 +1,8 @@
 package cn.licoy.wdog.common.handler;
 
 
-import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.bean.ResponseCode;
+import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.exception.RequestException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @author licoy.cn
- * @version 2017/11/18
- */
-@ControllerAdvice(basePackages = {"cn.licoy.wdog"})
+@ControllerAdvice(basePackages = {"cn.chiu.scam"})
 @Log4j
 public class GlobalDefaultExceptionHandler {
 

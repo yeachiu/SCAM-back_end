@@ -11,7 +11,6 @@ import cn.licoy.wdog.core.service.app.ActivityAdminsService;
 import cn.licoy.wdog.core.service.app.ApartmentMemberService;
 import cn.licoy.wdog.core.service.app.ApartmentService;
 import cn.licoy.wdog.core.service.app.UserAuthService;
-import cn.licoy.wdog.core.service.system.SysRoleService;
 import cn.licoy.wdog.core.service.system.SysUserRoleService;
 import cn.licoy.wdog.core.service.system.SysUserService;
 import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
@@ -30,11 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
-public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMapper,ApartmentMember> implements ApartmentMemberService{
+public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMapper,ApartmentMember> implements ApartmentMemberService {
 
     @Autowired
     private UserAuthService authService;
@@ -57,7 +55,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
      */
     @Override
     public void add(ApartmentMemberDTO addDTO) {
-        Boolean bool = authService.exist(addDTO.getUid());
+        Boolean bool = authService.existByUid(addDTO.getUid());
         if (!bool){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的学生信息",addDTO.getUid()));
         }
@@ -91,6 +89,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
             throw RequestException.fail("该成员为部门管理员，不允许删除");
         // 移除权限（角色）
         userRoleService.remove(member.getUid(),ConstCode.APAR_MEMBER);
+        activityAdminsService.removeAllByUId(member.getUid());
         this.deleteById(id);
 
     }
@@ -151,7 +150,7 @@ public class ApartmentMemberServiceImpl extends ServiceImpl<ApartmentMemberMappe
 
     @Override
     public void addAdmin(String aparId, String uid) {
-        Boolean bool = authService.exist(uid);
+        Boolean bool = authService.existByUid(uid);
         if (!bool){
             throw RequestException.fail(String.format("数据错误，不存在ID为%s的认证用户",uid));
         }

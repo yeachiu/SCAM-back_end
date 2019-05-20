@@ -1,9 +1,8 @@
 package cn.licoy.wdog.core.mapper.app;
 
 import cn.licoy.wdog.core.entity.app.Activity;
-import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import cn.licoy.wdog.core.vo.app.ActivityVO;
-import cn.licoy.wdog.core.vo.app.SimpleActivityVO;
+import cn.licoy.wdog.core.vo.app.ActivityAbstractVO;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

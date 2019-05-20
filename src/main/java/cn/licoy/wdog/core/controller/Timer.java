@@ -1,12 +1,9 @@
 package cn.licoy.wdog.core.controller;
 
-import cn.licoy.wdog.common.annotation.SysLogs;
 import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.core.entity.app.Activity;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import jdk.nashorn.internal.runtime.logging.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

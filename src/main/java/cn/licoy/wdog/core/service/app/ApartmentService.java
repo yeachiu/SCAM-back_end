@@ -7,8 +7,6 @@ import cn.licoy.wdog.core.vo.app.ApartmentVO;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
-import java.util.List;
-
 public interface ApartmentService extends IService<Apartment> {
 
     /**

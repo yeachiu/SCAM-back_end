@@ -1,6 +1,5 @@
 package cn.licoy.wdog.core.service.app.impl;
 
-import cn.licoy.wdog.common.exception.RequestException;
 import cn.licoy.wdog.core.entity.app.ActivityAdmins;
 import cn.licoy.wdog.core.entity.system.SysUser;
 import cn.licoy.wdog.core.mapper.app.ActivityAdminsMapper;
@@ -117,4 +116,13 @@ public class ActivityAdminsServiceImpl extends ServiceImpl<ActivityAdminsMapper,
         this.delete(new EntityWrapper<ActivityAdmins>().eq("activity_id",actiId));
     }
 
+    /**
+     * 清除某成员负责活动数据
+     *
+     * @param uid
+     */
+    @Override
+    public void removeAllByUId(String uid) {
+        this.delete(new EntityWrapper<ActivityAdmins>().eq("user_id",uid));
+    }
 }

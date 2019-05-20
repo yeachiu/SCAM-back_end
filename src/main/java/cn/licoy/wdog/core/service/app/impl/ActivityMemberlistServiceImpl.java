@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ActivityMemberlistServiceImpl extends ServiceImpl<ActivityMemberlistMapper,ActivityMemberlist> implements ActivityMemberlistService{
+public class ActivityMemberlistServiceImpl extends ServiceImpl<ActivityMemberlistMapper,ActivityMemberlist> implements ActivityMemberlistService {
 	
 }

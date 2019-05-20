@@ -1,10 +1,9 @@
 package cn.licoy.wdog.core.config.shiro;
 
 
-import cn.licoy.encryptbody.util.MD5EncryptUtil;
-import cn.licoy.wdog.common.util.Encrypt;
 import cn.licoy.wdog.common.util.JwtUtil;
 import cn.licoy.wdog.core.config.jwt.JwtToken;
+import cn.licoy.encryptbody.util.MD5EncryptUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 

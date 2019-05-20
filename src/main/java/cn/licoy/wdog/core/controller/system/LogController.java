@@ -1,8 +1,7 @@
 package cn.licoy.wdog.core.controller.system;
 
-import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.bean.ResponseCode;
-import cn.licoy.wdog.common.controller.DeleteController;
+import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.controller.QueryController;
 import cn.licoy.wdog.core.dto.system.log.FindLogDTO;
 import cn.licoy.wdog.core.entity.system.SysLog;
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/system/log")
 @Api(tags = {"日志管理"})
-public class LogController implements QueryController<SysLog,FindLogDTO,SysLogService>{
+public class LogController implements QueryController<SysLog,FindLogDTO,SysLogService> {
 
     @Autowired
     private SysLogService sysLogService;

@@ -1,5 +1,6 @@
 package cn.licoy.wdog.core.dto.system.user;
 
+
 import cn.licoy.wdog.core.dto.SplitPageDTO;
 
 /**

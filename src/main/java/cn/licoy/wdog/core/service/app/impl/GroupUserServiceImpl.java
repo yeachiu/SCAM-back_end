@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper,GroupUser> implements GroupUserService{
+public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper,GroupUser> implements GroupUserService {
 	
 }

@@ -6,7 +6,6 @@ import cn.licoy.wdog.core.mapper.app.ActivityFormMapper;
 import cn.licoy.wdog.core.service.app.ActivityFormService;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import cn.licoy.wdog.core.service.system.SysUserService;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.util.Date;
 
 @Service
 @Transactional
-public class ActivityFormServiceImpl extends ServiceImpl<ActivityFormMapper,ActivityForm> implements ActivityFormService{
+public class ActivityFormServiceImpl extends ServiceImpl<ActivityFormMapper,ActivityForm> implements ActivityFormService {
 
     @Autowired
     private SysUserService userService;

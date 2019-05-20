@@ -30,13 +30,13 @@ public interface UserAuthMapper extends BaseMapper<UserAuth> {
 
     @Select("SELECT a.id, a.uid, a.stu_id, a.real_name, a.stu_num, a.dict_id, a.period, a.what_class, a.`status`, g.`name` AS className, d.dict_name AS profession " +
             "FROM user_auth a, a_group g, student s, sys_dictionary d " +
-            "WHERE a.stu_id = s.id AND s.group_id = g.id AND a.`status` = 2  AND a.dict_id = d.id AND a.id NOT IN " +
+            "WHERE a.stu_id = s.id AND s.group_id = g.id AND a.`status` = 2  AND a.dict_id = d.id AND a.uid NOT IN " +
             "(SELECT m.uid FROM apartment_member m WHERE m.isadmin = 0)")
     List<UserAuthVO> alreadyListExAdmin();
 
     @Select("SELECT a.id, a.uid, a.stu_id, a.real_name, a.stu_num, a.dict_id, a.period, a.what_class, a.`status`, g.`name` AS className, d.dict_name AS profession " +
             "FROM user_auth a, a_group g, student s, sys_dictionary d " +
-            "WHERE a.stu_id = s.id AND s.group_id = g.id AND a.`status` = 2 AND a.dict_id = d.id AND a.id NOT IN " +
+            "WHERE a.stu_id = s.id AND s.group_id = g.id AND a.`status` = 2 AND a.dict_id = d.id AND a.uid NOT IN " +
             "(SELECT uid FROM apartment_member)")
     List<UserAuthVO> alreadyListExMember();
 

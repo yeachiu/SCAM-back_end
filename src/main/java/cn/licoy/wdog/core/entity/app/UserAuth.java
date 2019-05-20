@@ -1,7 +1,6 @@
 package cn.licoy.wdog.core.entity.app;
 
 
-import cn.licoy.wdog.core.entity.Schema;
 import com.baomidou.mybatisplus.annotations.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;

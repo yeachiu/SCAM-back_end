@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,ActivityMember> implements ActivityMemberService{
+public class ActivityMemberServiceImpl extends ServiceImpl<ActivityMemberMapper,ActivityMember> implements ActivityMemberService {
 
     @Autowired
     private ActivityMemberMapper mapper;

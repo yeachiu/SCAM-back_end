@@ -1,8 +1,8 @@
 package cn.licoy.wdog.core.controller.system;
 
 import cn.licoy.wdog.common.annotation.SysLogs;
-import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.common.bean.ResponseCode;
+import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.core.dto.system.resource.ResourceDTO;
 import cn.licoy.wdog.core.service.system.SysResourceService;
 import io.swagger.annotations.Api;

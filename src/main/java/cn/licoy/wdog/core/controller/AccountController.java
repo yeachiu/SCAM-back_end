@@ -1,9 +1,9 @@
 package cn.licoy.wdog.core.controller;
 
 import cn.licoy.wdog.common.annotation.JwtClaim;
-import cn.licoy.wdog.common.bean.ResponseResult;
-import cn.licoy.wdog.common.bean.ResponseCode;
 import cn.licoy.wdog.common.annotation.SysLogs;
+import cn.licoy.wdog.common.bean.ResponseCode;
+import cn.licoy.wdog.common.bean.ResponseResult;
 import cn.licoy.wdog.core.config.jwt.JwtToken;
 import cn.licoy.wdog.core.dto.SignInDTO;
 import cn.licoy.wdog.core.service.system.SysUserService;
@@ -35,7 +35,7 @@ public class AccountController {
     @ApiOperation(value = "登录")
     @SysLogs("登录")
     public ResponseResult signIn(@RequestBody @Validated @ApiParam(value = "登录数据",required = true)
-                                              SignInDTO signInDTO){
+                                         SignInDTO signInDTO){
         userService.signIn(signInDTO);
         return ResponseResult.e(ResponseCode.SIGN_IN_OK,((JwtToken)SecurityUtils.getSubject().getPrincipal()).getToken());
     }
