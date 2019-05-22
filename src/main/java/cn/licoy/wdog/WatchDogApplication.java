@@ -1,5 +1,6 @@
 package cn.licoy.wdog;
 
+import lombok.extern.slf4j.Slf4j;
 import cn.licoy.wdog.common.util.PortUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +14,7 @@ import javax.servlet.MultipartConfigElement;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
+@Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties
 @EnableTransactionManagement
@@ -29,8 +30,7 @@ public class WatchDogApplication {
         try {
             InetAddress address = null;
             address = InetAddress.getLocalHost();
-            System.out.println(" App running at:    " );
-            System.out.println("                     http://"+ address.getHostAddress() + ":1000\"");
+            log.info("App running at:   http://" + address.getHostAddress() + ":1000");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
