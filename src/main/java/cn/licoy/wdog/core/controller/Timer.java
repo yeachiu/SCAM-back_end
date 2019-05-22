@@ -4,6 +4,7 @@ import cn.licoy.wdog.common.bean.ConstCode;
 import cn.licoy.wdog.core.entity.app.Activity;
 import cn.licoy.wdog.core.service.app.ActivityService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
-//@Slf4j
+@Slf4j
 @Component //使spring管理
 @EnableScheduling //定时任务注解
 public class Timer {
@@ -22,6 +23,7 @@ public class Timer {
 
     @Scheduled(cron = "0/5 * * * * *")
     public void SignupTimer(){
+        log.info("SignupTimer Scanning...");
         // 获取活动数据
         EntityWrapper wrapper = new EntityWrapper();
         wrapper.eq("status",2);
@@ -34,7 +36,7 @@ public class Timer {
                     acti.setModifyUser("System");
                     acti.setModifyTime(new Date());
                     activityService.updateById(acti);
-                    System.out.println("活动" + acti.getTitle() + "更新状态:" + acti.getStatus());
+                    log.info("活动" + acti.getTitle() + "更新状态: 进行中 [" + acti.getStatus() + "]");
                 }
             }
         }
@@ -44,6 +46,7 @@ public class Timer {
 
     @Scheduled(cron = "0/5 * * * * *")
     public void ActivityTimer(){
+        log.info("ActivityTimer Scanning...");
         // 获取活动数据
         EntityWrapper wrapper = new EntityWrapper();
         wrapper.eq("status",3);
@@ -56,7 +59,7 @@ public class Timer {
                     acti.setModifyUser("System");
                     acti.setModifyTime(new Date());
                     activityService.updateById(acti);
-                    System.out.println("活动" + acti.getTitle() + "更新状态:" + acti.getStatus());
+                    log.info("活动 [ " + acti.getTitle() + " ] 更新状态: 已完成 [" + acti.getStatus() + "]");
                 }
             }
         }
